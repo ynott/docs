@@ -4,27 +4,27 @@ shortTitle: K3s
 name: "menu"
 ---
 
-Lightweight Kubernetes.  Easy to install, half the memory, all in a binary less than 40mb.
+軽量Kubernetesです。 インストールが簡単、メモリ使用量も半分、バイナリサイズも40MB未満です。
 
-Great for:
+最適な用途:
 
 * Edge
 * IoT
 * CI
 * ARM
-* Situations where a PhD in k8s clusterology is infeasible
+* k8sクラスタ構成を実行不可能な博士課程のシチュエーション
 
-What is this?
+どういうものか
 ---
 
-K3s is a fully compliant Kubernetes distribution with the following enhancements:
+K3sはKubernetesに完全に準拠したディストリビューションで次のような拡張が行われています:
 
-* An embedded SQLite database has replaced etcd as the default datastore. External datastores such as PostgreSQL, MySQL, and etcd are also supported.
-* Simple but powerful "batteries-included" features have been added, such as: a local storage provider, a service load balancer, a helm controller, and the Traefik ingress controller.
-* Operation of all Kubernetes control plane components is encapsulated in a single binary and process. This allows K3s to automate and manage complex cluster operations like distributing certificates.
-* In-tree cloud providers and storage plugins have been removed.
-* External dependencies have been minimized (just a modern kernel and cgroup mounts needed). K3s packages required dependencies, including:
+* デフォルトのデータストアとして、etcdから組み込みSQLiteデータベースに置き換えました。PostgreSQL、MySQL、etcdなどの外部データストアもサポートしています。
+* ローカルストレージプロバイダ、ロードバランサーサービス、helmコントローラ、およびTraefikイングレスコントローラなど、シンプルながら強力な"組み込みの"機能が追加されています。
+* Kubernetesコントロールプレーンの操作に必要なコンポーネントは、単一のバイナリとプロセスにカプセル化されています。これにより、K3では証明書の配布などの複雑なクラスタ操作を管理したり自動化することができます。
+* インツリーのクラウドプロバイダーとストレージプラグインは削除されています。
+* 外部への依存関係は必要最小限になっています(最新のカーネルとcgroupマウントだけ必要です)。K3sには依存している以下の必要なパッケージが含まれています:
     * containerd
     * Flannel
     * CoreDNS
-    * Host utilities (iptables, socat, etc)
+    * ホストユーティリティー (iptables, socat, etc)
