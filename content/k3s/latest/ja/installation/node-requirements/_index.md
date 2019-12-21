@@ -1,38 +1,39 @@
 ---
-title: Node Requirements
+title: ノード要件
 weight: 1
 ---
 
-K3s is very lightweight, but has some minimum requirements as outlined below.
+K3sは非常に軽量なのですが、次に示すようにいくつかの最小限の必要要件があります。
 
-Whether you're configuring a K3s cluster to run in a single-node or high-availability (HA) setup, each node running K3s should meet the following minimum requirements. You may need more resources to fit your needs.
+K3sクラスタを単一ノード構成または高可用性(HA)構成のいずれで構成する場合でも、K3sを実行する各ノードは次の最小要件を満たす必要があります。必要に応じて、より多くのリソースが必要になる場合があります。
 
-## Prerequisites
-*    Two nodes cannot have the same hostname. If all your nodes have the same hostname, pass `--node-name` or set `$K3S_NODE_NAME` with a unique name for each node you add to the cluster.
+## 前提条件
 
-## Operating Systems
+* 2つのノードは同じホスト名であってはいけません。すべてのノードのホスト名が同じである場合は、クラスタに追加する各ノードに`--node-name` を渡すか、または `$K3S_NODE_NAME` に一意の名前を設定します。
 
-K3s should run on just about any flavor of Linux. However, K3s is tested on the following operating systems and their subsequent non-major releases.
+## オペレーティングシステム
+
+K3sはどんな種類のLinuxでも動くはずです。ただし、K3sは次のオペレーティングシステムとそれらのメジャーリリースではないマイナーリリースでテストされています。
 
 *    Ubuntu 16.04 (amd64)
 *    Ubuntu 18.04 (amd64)
 *    Raspbian Buster (armhf)
 
-## Hardware
+## ハードウェア要件
 
-Hardware requirements scale based on the size of your deployments. Minimum recommendations are outlined here.
+ハードウェア要件は、デプロイサイズにより増減します。ここでは、最小での推奨構成について説明します。
 
 *    RAM: 512MB Minimum
 *    CPU: 1 Minimum
 
-#### Disks
+#### ディスク
 
-K3s performance depends on the performance of the database. To ensure optimal speed, we recommend using an SSD when possible. Disk performance will vary on ARM devices utilizing an SD card or eMMC.
+K3sのパフォーマンスは、データベースのパフォーマンスに依存します。最適な速度を確保するには、可能な限りSSDを使用することをお勧めします。ディスクのパフォーマンスは、ARMデバイスで使われているSDカードまたはeMMCによって異なります。
 
-## Networking
+## ネットワーク
 
-The K3s server needs port 6443 to be accessible by the nodes. The nodes need to be able to reach other nodes over UDP port 8472 (Flannel VXLAN). If you do not use flannel and provide your own custom CNI, then port 8472 is not needed by K3s. The node should not listen on any other port. K3s uses reverse tunneling such that the nodes make outbound connections to the server and all kubelet traffic runs through that tunnel.
+K3sサーバーは、ノードにポート6443でアクセスできる必要があります。ノードはUDPポート8472(Flannel VXLAN)を介して他のノードに到達できる必要があります。flannelを使用せずに独自のCNIを利用する場合は、K3sにポート8472は必要ありません。ノードは他のポートをリッスンしません。K3sは、ノードがサーバーへの発信接続を行い、すべてのkubeletトラフィックがそのトンネルを通過するように、逆トンネリングを使用します。
 
-IMPORTANT: The VXLAN port on nodes should not be exposed to the world as it opens up your cluster network to be accessed by anyone. Run your nodes behind a firewall/security group that disabled access to port 8472.
+重要:ノードのVXLANポートは、クラスターネットワークを開放して誰もがアクセスできるようになるため、外部に公開しないでください。ポート8472へのアクセスできないようにしたファイアウォール/セキュリティグループの裏でノードを実行してください。
 
-If you wish to utilize the metrics server, you will need to open port 10250 on each node.
+メトリックサーバーを使用する場合は、各ノードでポート10250を開く必要があります。
