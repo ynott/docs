@@ -1,30 +1,30 @@
 ---
-title: "Quick-Start Guide"
+title: "クイックスタートガイド"
 weight: 10
 ---
 
->**Note:** This guide will help you quickly launch a cluster with default options. The [installation section](../installation) covers in greater detail how K3s can be set up.
+>**注意:** このガイドでは、デフォルトオプションを使用してクラスタをすばやく起動する方法について説明します。[インストールセクション](../installation)では、K3の設定方法について詳しく説明しています。
 
-> New to Kubernetes? The official Kubernetes docs already have some great tutorials outlining the basics [here](https://kubernetes.io/docs/tutorials/kubernetes-basics/).
+> Kubernetesは初めてですか？Kubernetesの基本的なことを概説した素晴らしいチュートリアルが公式ドキュメントの[こちら](https://kubernetes.io/docs/tutorials/kubernetes-basics/)にあります。
 
-Install Script
+インストールスクリプト
 --------------
-K3s provides an installation script that is a convenient way to install it as a service on systemd or openrc based systems. This script is available at https://get.k3s.io. To install K3s using this method, just run:
+systemdまたはopenrcベースのシステムにサービスとしてインストールするのに便利なK3sをインストールするスクリプトがあります。このスクリプトは、https://get.k3s.io からダウンロードすることができます。この方法でK3sをインストールするには、以下のように動かします:
 ```bash
 curl -sfL https://get.k3s.io | sh -
 ```
 
-After running this installation:
+このインストールの実行後:
 
-* The K3s service will be configured to automatically restart after node reboots or if the process crashes or is killed
-* Additional utilities will be installed, including `kubectl`, `crictl`, `ctr`, `k3s-killall.sh`, and `k3s-uninstall.sh`
-* A kubeconfig file will be written to `/etc/rancher/k3s/k3s.yaml` and the kubectl installed by K3s will automatically use it
+* K3sサービスは、ノードの再起動後、またはプロセスがクラッシュまたは強制終了した場合に自動的に再起動するように設定されます。
+* `kubectl`、`crictl`、`ctr`、`k3s-killall`と`k3s-uninstall.sh` などの追加ユーティリティがインストールされます。
+* kubeconfigファイルは`/etc/rancher/k3s/k3s.yaml`に書き込まれ、K3sがインストールしたkubectlで自動的に使用されます。
 
-To install on worker nodes and add them to the cluster, run the installation script with the `K3S_URL` and `K3S_TOKEN` environment variables. Here is an example showing how to join a worker node:
+ワーカーノードにインストールしてクラスタに追加するには、環境変数 `K3S_URL` および `K3S_TOKEN` を使用してインストールスクリプトを実行します。Workerノードを追加する方法は以下の通りです:
 
 ```bash
 curl -sfL https://get.k3s.io | K3S_URL=https://myserver:6443 K3S_TOKEN=mynodetoken sh -
 ```
-Setting the `K3S_URL` parameter causes K3s to run in worker mode. The K3s agent will register with the K3s server listening at the supplied URL. The value to use for `K3S_TOKEN` is stored at `/var/lib/rancher/k3s/server/node-token` on your server node.
+`K3S_URL`パラメータを設定すると、K3がワーカーモードで実行されます。K3sエージェントは、指定されたURLでリッスンするK3sサーバーに登録されます。`K3S_TOKEN`に使用する値は、サーバーノードの`/var/lib/rancher/k3s/server/node-token`に格納されます。
 
-Note: Each machine must have a unique hostname. If your machines do not have unique hostnames, pass the `K3S_NODE_NAME` environment variable and provide a value with a valid and unique hostname for each node.
+注意：各マシンには一意のホスト名が必須です。マシンのホスト名が一意でない場合は、`K3S_NODE_NAME`環境変数を渡し、各ノードに有効な一意のホスト名を指定します。
