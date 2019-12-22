@@ -1,50 +1,52 @@
 ---
-title: "Installation and Configuration Options"
+title: "インストールと設定オプション"
 weight: 20
 ---
 
-### Installation script options
+### インストールスクリプトに対するオプション
 
-As mentioned in the [Quick-Start Guide]({{< baseurl >}}/k3s/latest/en/quick-start/), you can use the installation script available at https://get.k3s.io to install K3s as a service on systemd and openrc based systems.
+[クイックスタートガイド]({{< baseurl >}}/k3s/latest/en/quick-start/)に書かれていたように、systemdやopenrcベースのシステムのサービスとしてK3sをインストールするスクリプトを https://get.k3s.io からダウンロードして利用することができます。
 
-The simplest form of this command is as follows:
+以下のようなシンプルなコマンドになります:
 ```sh
 curl -sfL https://get.k3s.io | sh -
 ```
-
-When using this method to install K3s, the following environment variables can be used to configure the installation:
+この方法を使用してK3をインストールする場合は、次の環境変数を使用してインストールオプションを指定できます:
 
 - `INSTALL_K3S_SKIP_DOWNLOAD`
 
-    If set to true will not download K3s hash or binary.
+    trueに設定すると、K3のハッシュまたはバイナリはダウンロードされません。
 
 - `INSTALL_K3S_SYMLINK`
 
-    If set to 'skip' will not create symlinks, 'force' will overwrite, default will symlink if command does not exist in path.
+    この環境変数を `skip` に設定するとシンボリックリンクは作成されず、`force` では上書きされます。commandがpathに存在しない場合、defaultではシンボリックリンクになります。
 
 - `INSTALL_K3S_SKIP_START`
 
-    If set to true will not start K3s service.
+    trueに設定すると、K3sサービスは開始されません。
 
 - `INSTALL_K3S_VERSION`
 
-    Version of K3s to download from github. Will attempt to download the latest version if not specified.
+    githubからダウンロードするK3sのバージョン。指定されていない場合は、最新バージョンをダウンロードしようとします。
 
 - `INSTALL_K3S_BIN_DIR`
 
-    Directory to install K3s binary, links, and uninstall script to, or use `/usr/local/bin` as the default.
+    K3sバイナリ、リンク、およびアンインストールスクリプトをインストールするディレクトリを指定します。指定しない場合、`/usr/local/bin` がデフォルトになります。
 
 - `INSTALL_K3S_BIN_DIR_READ_ONLY`
 
-    If set to true will not write files to `INSTALL_K3S_BIN_DIR`, forces setting INSTALL_K3S_SKIP_DOWNLOAD=true.
+    trueに設定すると、ファイルは `INSTALL_K3S_BIN_DIR` に書き込まれません。強制的にINSTALL_K3S_SKIP_DOWNLOAD=trueに設定されます。
 
 - `INSTALL_K3S_SYSTEMD_DIR`
 
-    Directory to install systemd service and environment files to, or use `/etc/systemd/system` as the default.
+    systemdサービスおよび環境ファイルをインストールするディレクトリ、指定しない場合、`/etc/systemd/system`がデフォルトになります。
 
 - `INSTALL_K3S_EXEC`
 
-    Command with flags to use for launching K3s in the service. If the command is not specified, it will default to "agent" if `K3S_URL` is set or "server" if it is not set. The final systemd command resolves to a combination of this environment variable and script args. To illustrate this, the following commands result in the same behavior:
+    K3sをサービスで起動するかどうかを指定するフラグ付きのコマンドです。コマンドで指定していない場合、`K3S_URL` が設定
+    されていればデフォルトで"エージェント"として起動し、設定されていなければ "サーバー"で動くようにセットされます。
+    最終的にsystemdコマンドは、この環境変数とスクリプト引数の組み合わせを統合します。どういう事かといいますと、
+    以下のコマンドは最終的に全て同じ動作になります:
      ```sh
      curl ... | INSTALL_K3S_EXEC="--no-flannel" sh -s -
      curl ... | INSTALL_K3S_EXEC="server --no-flannel" sh -s -
@@ -55,29 +57,31 @@ When using this method to install K3s, the following environment variables can b
 
    - `INSTALL_K3S_NAME`
 
-    Name of systemd service to create, will default from the K3s exec command if not specified. If specified the name will be prefixed with 'k3s-'.
+    作成するsystemdサービス名を指定します。指定しない場合は、K3s execコマンドからデフォルト設定されます。指定すると、
+    その名前の先頭に'k3s-'が付きます。
 
    - `INSTALL_K3S_TYPE`
 
-    Type of systemd service to create, will default from the K3s exec command if not specified.
+    作成するsystemdサービスのタイプ。指定しない場合は、K3s execコマンドからデフォルト設定されます。
 
 
-Environment variables which begin with `K3S_` will be preserved for the systemd and openrc services to use. Setting `K3S_URL` without explicitly setting an exec command will default the command to "agent". When running the agent `K3S_TOKEN` must also be set.
+`K3S_` で始まる環境変数は、systemdおよびopenrcサービスで使用する用に保持されます。execコマンドに明示的に設定せずに `K3S_URL` が設定されているとコマンドはデフォルトで"エージェント"として設定されます。エージェントとして実行するときには、`K3S_TOKEN` も設定する必要があります。
 
 
-### Beyond the Installation Script
-As stated, the installation script is primarily concerned with configuring K3s to run as a service. If you choose to not use the script, you can run K3s simply by downloading the binary from our [release page](https://github.com/rancher/k3s/releases/latest), placing it on your path, and executing it. The K3s binary supports the following commands:
+### インストールスクリプト以外
+前述のように、インストールスクリプトは主にK3をサービスとして実行するように設定することに関連しています。このスクリプトを使用しない場合は、[リリースページ](https://github.com/rancher/k3s/releases/latest)からバイナリをダウンロードし、パスに配置して実行するだけでK3sを実行できます。K3sバイナリは、次のコマンドをサポートしています:
 
-Command | Description
+コマンド | 詳細
 --------|------------------
-<span class='nowrap'>`k3s server`</span> | Run the K3s management server, which will also launch Kubernetes control plane components such as the API server, controller-manager, and scheduler.
-<span class='nowrap'>`k3s agent`</span> |  Run the K3s node agent. This will cause K3s to run as a worker node, launching the Kubernetes node services `kubelet` and `kube-proxy`.
-<span class='nowrap'>`k3s kubectl`</span> | Run an embedded [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) CLI. If the `KUBECONFIG` environment variable is not set, this will automatically attempt to use the config file that is created at `/etc/rancher/k3s/k3s.yaml` when launching a K3s server node.
-<span class='nowrap'>`k3s crictl`</span> | Run an embedded [crictl](https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md). This is a CLI for interacting with Kubernetes's container runtime interface (CRI). Useful for debugging.
-<span class='nowrap'>`k3s ctr`</span> | Run an embedded [ctr](https://github.com/projectatomic/containerd/blob/master/docs/cli.md). This is a CLI for containerd, the container daemon used by K3s. Useful for debugging.
-<span class='nowrap'>`k3s help`</span> | Shows a list of commands or help for one command
+<span class='nowrap'>`k3s server`</span> | K3s管理サーバーを起動します。このサーバーは、APIサーバー、コントローラマネージャー、スケジューラなどのKubernetesコントロールプレーンコンポーネントも起動します。
+<span class='nowrap'>`k3s agent`</span> |  K3sノードエージェントを起動します。これにより、K3はワーカーノードとして動作し、`kubelet`と`kube-proxy`のKubernetesノードサービスを起動します。
+<span class='nowrap'>`k3s kubectl`</span> | 組み込みの[kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) CLIを実行します。K3sサーバーノードとして起動するときに`KUBECONFIG` 環境変数が設定されていない場合は、`/etc/rancher/k3s/k3s.yaml`に作成された設定ファイルが自動的に使用されます。
+<span class='nowrap'>`k3s crictl`</span> | 埋め込みの[crictl](https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md)を実行します。これはKubernetesのコンテナランタイムインターフェース(CRI)とやりとりするためのCLIです。デバッグに役立ちます。
+<span class='nowrap'>`k3s ctr`</span> | 埋め込み[ctr](https://github.com/projectatomic/containerd/blob/master/docs/cli.md)を実行します。これは、K3sが使用するコンテナデーモンcontainerdのCLIです。デバッグに役立ちます。
+<span class='nowrap'>`k3s help`</span> | コマンドの一覧または1つのコマンドのヘルプを表示します
 
-The `k3s server` and `k3s agent` commands have additional configuration options that can be viewed with <span class='nowrap'>`k3s server --help`</span> or <span class='nowrap'>`k3s agent --help`</span>. For convenience, that help text is presented here:
+`k3s server` および `k3s agent` コマンドには追加の設定オプションがあり、<span class='nowrap'>`k3s server --help`</span>または<span class='nowrap'>`k3s agent --help`</span>で表示できます。
+The `k3s server` and `k3s agent` commands have additional configuration options that can be viewed with <span class='nowrap'>`k3s server --help`</span> or <span class='nowrap'>`k3s agent --help`</span>. 便宜上、このヘルプテキストを以下に示します:
 
 ### `k3s server`
 ```
