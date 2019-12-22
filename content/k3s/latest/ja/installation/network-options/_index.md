@@ -1,32 +1,32 @@
 ---
-title: "Network Options"
+title: "ネットワークオプション"
 weight: 25
 ---
 
-> **Note:** Please reference the [Networking]({{< baseurl >}}/k3s/latest/en/networking) page for information about CoreDNS, Traefik, and the Service LB.
+> **注意:** CoreDNS、Traefik、およびサービスLBについては、[ネットワーク]({{< baseurl >}}/k3s/latest/en/networking)ページを参照してください。
 
-By default, K3s will run with flannel as the CNI, using VXLAN as the default backend. To change the CNI, refer to the section on configuring a [custom CNI](#custom-cni). To change the flannel backend, refer to the flannel options section.
+デフォルトでは、K3はCNIとしてflannelを使用し、デフォルトのバックエンドとしてVXLANを使用します。CNIを変更するには、[カスタムCNI](#custom-cni)の設定に関するセクションを参照してください。flannelバックエンドを変更するには、flannelオプションのセクションを参照してください。
 
-### Flannel Options
+### Flannel オプション
 
-The default backend for flannel is VXLAN. To enable encryption, pass the IPSec (Internet Protocol Security) or WireGuard options below.
+flannelのデフォルトのバックエンドはVXLANです。暗号化を有効にするには、次のIPSec(インターネットプロトコルセキュリティ)を通すか、または以下のWireGuardオプションを使用します。
 
-If you wish to use WireGuard as your flannel backend it may require additional kernel modules. Please see the [WireGuard Install Guide](https://www.wireguard.com/install/) for details. The WireGuard install steps will ensure the appropriate kernel modules are installed for your operating system. You need to install WireGuard on every node, both server and agents before attempting to leverage the WireGuard flannel backend option.
+FlannelのネルバックエンドとしてWireGuardを使いたいなら、追加のカーネルモジュールが必要かもしれません。詳しくは[WireGuardインストールガイド] (https://www.wireguard.com/install/)をご覧ください。WireGuardのインストール手順では、ご使用のオペレーティング・システムに適切なカーネル・モジュールがインストールされていることを確認します。WireGuard flannelバックエンドオプションを利用する前に、サーバとエージェントの両方のすべてのノードにWireGuardをインストールする必要があります。
 
-  CLI Flag and Value | Description
+  CLIフラグと値 | 詳細
   -------------------|------------
- <span style="white-space: nowrap">`--flannel-backend=vxlan`</span> | (Default) Uses the VXLAN backend. |
- <span style="white-space: nowrap">`--flannel-backend=ipsec`</span> | Uses the IPSEC backend which encrypts network traffic. |
- <span style="white-space: nowrap">`--flannel-backend=wireguard`</span> | Uses the WireGuard backend which encrypts network traffic. May require additional kernel modules and configuration. |
+ <span style="white-space: nowrap">`--flannel-backend=vxlan`</span> | (デフォルト) VXLANをバックエンドとして使用 |
+ <span style="white-space: nowrap">`--flannel-backend=ipsec`</span> | ネットワークトラフィックを暗号化するIPSECバックエンドを使用 |
+ <span style="white-space: nowrap">`--flannel-backend=wireguard`</span> | ネットワークトラフィックを暗号化するWireGuardバックエンドを使います。追加のカーネルモジュールと設定が必要になる場合があります。 |
 
-### Custom CNI
+### カスタム CNI
 
-Run K3s with `--flannel-backend=none` and install your CNI of choice. IP Forwarding should be enabled for Canal and Calico. Please reference the steps below.
+`--flannel-backend=none` を指定してK3sを実行し、選択したCNIをインストールします。CanalとCalicoではIP Forwardingを有効にする必要があります。以下の手順を参照してください。
 
 {{% tabs %}}
 {{% tab "Canal" %}}
 
-Visit the [Project Calico Docs](https://docs.projectcalico.org/) website. Follow the steps to install Canal. Modify the Canal YAML so that IP forwarding is allowed in the container_settings section, for example:
+[プロジェクトCalicoドキュメント](https://docs.projectcalico.org/)にアクセスしてください。Canalをインストールするには以下の手順に従います。Canal YAMLを変更してcontainer_settingsセクションでIP転送が許可されるようにします。次に例を示します:
 
 ```
 "container_settings": {
@@ -34,20 +34,20 @@ Visit the [Project Calico Docs](https://docs.projectcalico.org/) website. Follow
           }
 ```
 
-Applyl the Canal YAML.
+Canal YAMLを適用
 
-Ensure the settings were applied by running the following command on the host:
+ホストで次のコマンドを実行して、設定が適用されていることを確認します:
 
 ```
 cat /etc/cni/net.d/10-calico.conflist
 ```
 
-You should see that IP forwarding is set to true.
+IP forwardingがtrueに設定されていることを確認します。
 
 {{% /tab %}}
 {{% tab "Calico" %}}
 
-Follow the [Calico CNI Plugins Guide](https://docs.projectcalico.org/master/reference/cni-plugin/configuration). Modify the Calico YAML so that IP forwarding is allowed in the container_settings section, for example:
+[Calico CNIプラグインガイド](https://docs.projectcalico.org/master/reference/cni-plugin/configuration)に従ってください。container_settingsセクションでIP転送が許可されるようにCalico YAMLを変更します。次に例を示します。
 
 ```
 "container_settings": {
@@ -55,15 +55,15 @@ Follow the [Calico CNI Plugins Guide](https://docs.projectcalico.org/master/refe
           }
 ```
 
-Apply the Calico YAML.
+Canal YAMLを適用
 
-Ensure the settings were applied by running the following command on the host:
+ホストで次のコマンドを実行して、設定が適用されていることを確認します:
 
 ```
 cat /etc/cni/net.d/10-canal.conflist
 ```
 
-You should see that IP forwarding is set to true.
+IP forwardingがtrueに設定されていることを確認します。
 
 
 {{% /tab %}}
