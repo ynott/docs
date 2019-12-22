@@ -1,57 +1,57 @@
 ---
-title: "High Availability with an External DB"
+title: "外部DBによる高可用性"
 weight: 30
 ---
 
->**Note:** Official support for High-Availability (HA) was introduced in our v1.0.0 release.
+>**注意:** 高可用性(HA)の公式サポートは、v1.0.0リリースで導入されました。
 
-Single server clusters can meet a variety of use cases, but for environments where uptime of the Kubernetes control plane is critical, you can run K3s in an HA configuration. An HA K3s cluster is comprised of:
+単一サーバクラスタはさまざまなユースケースに対応できますが、Kubernetesコントロールプレーンの稼働時間が重要な環境では、HA構成でK3sを実行できます。HAのK3sクラスタは、次のコンポーネントで構成されています:
 
-* Two or more **server nodes** that will serve the Kubernetes API and run other control plane services
-* An **external datastore** (as opposed to the embedded SQLite datastore used in single server setups)
-* A **fixed registration address** placed in front of the server nodes to allow worker nodes to register with the cluster
+* Kubernetes APIと他のコントロールプレーンサービスを実行する2つ以上の **サーバノード**
+* **外部データストア** (シングルサーバのセットアップで使用される組み込みSQLiteデータストアとは対照的なもの)
+* ワーカーノードがクラスタに登録できるようにサーバーノードのフロントには**固定の登録アドレス**があること
 
-The following diagram illustrates the above configuration:
+次の図は、上記の設定を示しています:
 ![k3s HA]({{< baseurl >}}/img/k3s/k3s-production-setup.svg)
 
-In this architecture a server node is defined as a machine (bare-metal or virtual) running the `k3s server` command. A worker node is defined as a machine running the `k3s agent` command.
+このアーキテクチャでは、サーバノードは`k3s server`コマンドを実行するマシン(ベアメタルまたは仮想)として定義しています。ワーカーノードは、`k3s agent`コマンドを実行するマシンとして定義しています。
 
-Workers register through the fixed registration address, but after registration they establish a connection directly to one of the sever nodes. This is a websocket connection initiated by the `k3s agent` process and it is maintained by a client-side load balancer running as part of the agent process.
+ワーカーは固定の登録アドレスを使用して登録しますが、登録後はサーバー・ノードの1つに直接接続します。これは、 `k3s agent` プロセスによって開始されるWebソケット接続であり、エージェントプロセスの一部として実行されるクライアント側のロードバランサによって維持されます。
 
-Installation Outline
+インストールの概要
 --------------------
-Setting up an HA cluster requires the following steps:
+HAクラスタをセットアップするには、次の手順を実行する必要があります:
 
-1. Create an external datastore
-2. Launch server nodes
-3. Configure fixed registration address
-4. Join worker nodes
+1. 外部データストアを作成する
+2. サーバ・ノードの起動
+3. 固定の登録アドレスを設定する
+4. ワーカーノードを接続
 
-### Create an External Datastore
-You will first need to create an external datastore for the cluster. See the [Cluster Datastore Options]({{< baseurl >}}/k3s/latest/en/installation/datastore/) documentation for more details.
+### 外部データストアの作成
+最初に、クラスタの外部データストアを作成する必要があります。詳細については、[クラスタデータストアオプション]({{< baseurl >}}/k3s/latest/en/installation/datastore/)を参照してください。
 
-### Launch Server Nodes
-K3s requires two or more server nodes for this HA configuration. See the [Node Requirements]({{< baseurl >}}/k3s/latest/en/installation/node-requirements/) guide for minimum machine requirements.
+### サーバー・ノードの起動
+このHA構成では、K3sには2つ以上のサーバノードを必要とします。最小マシン要件については、[ノード要件]({{< baseurl >}}/k3s/latest/ja/installation/node-requirements/)ガイドを参照してください。
 
-When running the `k3s server` command on these nodes, you must set the `datastore-endpoint` parameter so that K3s knows how to connect to the external datastore. Please see the [datastore configuration guide]({{< baseurl >}}/k3s/latest/en/installation/datastore/#external-datastore-configuration-parameters) for information on configuring this parameter.
+これらのノードで `k3s server` コマンドを実行する場合は、K3が外部データストアへの接続方法を認識できるように `datastore-endpoint` パラメータを設定する必要があります。このパラメータの構成については、[データストア構成ガイド]({{< baseurl >}}/k3s/latest/en/installation/datastore/#external-datastore-configuration-parameters)を参照してください。
 
-> **Note:** The same installation options available to single-server installs are also available for HA installs. For more details, see the [Installation and Configuration Options]({{< baseurl >}}/k3s/latest/en/installation/install-options/) documentation.
+> **注意:** HAインストールでは、単一サーバーのインストールと同じインストールオプションを使用できます。詳細については、[インストールおよび構成オプション]({{< baseurl >}}/k3s/latest/en/installation/install-options/)のマニュアルを参照してください。
 
-By default, server nodes will be schedulable and thus your workloads can get launched on them. If you wish to have a dedicated control plane where no user workloads will run, you can use taints. The <span style='white-space: nowrap'>`node-taint`</span> parameter will allow you to configure nodes with taints, for example <span style='white-space: nowrap'>`--node-taint k3s-controlplane=true:NoExecute`</span>.
+デフォルトでは、サーバ・ノードにスケジューリングできる設定のため、その上でワークロードを起動できます。ユーザワークロードを実行しない専用のコントロールプレーンが必要な場合は、taintを使用できます。<span style='white-space:nowrap'>`node-taint`</span>パラメータを使用するとノードをtaintに設定できます。例えば、 <span style='white-space: nowrap'>`--node-taint k3s-controlplane=true:NoExecute`</span>のように設定します。
 
-Once you've launched the `k3s server` process on all server nodes, you can ensure that the cluster has come up properly by checking that the nodes are in the Ready state with `k3s kubectl get nodes`.
+すべてのサーバーノードで `k3s server` プロセスを起動したら、 `k3s kubectl get nodes` を使用してノードが準備完了状態であることを確認することで、クラスタが正しく起動したことを確認できます。
 
-### Configure the Fixed Registration Address
-Worker nodes need a URL to register against. This can be the IP or hostname of any of the server nodes, but in many cases those may change over time. For example, if you are running your cluster in a cloud that supports scaling groups, you may scale the server node group up and down over time, causing nodes to be created and destroyed and thus having different IPs from the initial set of server nodes. Therefore, you should have a stable endpoint in front of the server nodes that will not change over time. This endpoint can be setup using any number approaches, such as:
+### 固定登録アドレスを構成する
+ワーカーノードを動かすには、登録にURLが必要です。任意のサーバ・ノードのIPまたはホスト名を指定できますが、多くの場合、これらは時間の経過とともに変更されます。たとえば、グループの拡張をサポートするクラウドでクラスタを実行している場合、サーバーノードグループを時間の経過とともに拡大または縮小すると、ノードが作成されて破棄されるため、サーバーノードの初期セットとは異なるIPを持つことになります。したがって、サーバー・ノードの前には、時間が経っても変化しない安定したエンドポイントが必要です。このエンドポイントは、次のようないくつかのアプローチを使用して設定できます。
 
-* A layer-4 (TCP) load balancer
-* Round-robin DNS
-* A virtual or elastic IP addresses
+* L4 (TCP) ロードバランサー
+* ラウンドロビンDNS
+* 仮想IPアドレスまたは柔軟なIPアドレス
 
-This endpoint can also be used for accessing the Kubernetes API. So you can, for example, modify your kubeconfig file to point to it instead of a specific node.
+このエンドポイントは、Kubernetes APIへのアクセスにも使用できます。したがって、たとえば、kubeconfigファイルを特定のノードではなくそれを指すように変更できます。
 
-### Join Worker Nodes
-Joining worker nodes in an HA cluster is the same as joining worker nodes in a single server cluster. You just need to specify the URL the agent should register to and the token it should use.
+### ワーカーノードを追加
+HAクラスタへのワーカーノードの追加は、単一サーバークラスタ内のワーカーノードの追加と同じです。エージェントが登録するURLと使用するトークンを指定するだけです。
 ```
 K3S_TOKEN=SECRET k3s agent --server https://fixed-registration-address:6443
 ```
