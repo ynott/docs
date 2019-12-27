@@ -1,23 +1,23 @@
 ---
-title: "Advanced Options"
+title: "詳細オプション"
 weight: 40
 aliases:
   - /k3s/latest/en/running/
 ---
 
-This section contains advanced information describing the different ways you can run and manage K3s.
+このセクションでは、K3を実行および管理するさまざまな方法について詳しく説明します。
 
-Starting the Server
+サーバーの起動
 ------------------
 
-The installation script will auto-detect if your OS is using systemd or openrc and start the service.
-When running with openrc logs will be created at `/var/log/k3s.log`, or with systemd in `/var/log/syslog` and viewed using `journalctl -u k3s`. An example of installing and auto-starting with the install script:
+インストールスクリプトは、OSがsystemdまたはopenrcを使用しているかどうかを自動検出し、サービスを開始します。
+ログはopenrcの場合は `/var/log/k3s.log` に出力され、systemdの場合は、`/var/log/syslog` に出力されます。`journalctl-u k3s`を使用して表示することもできます。インストールスクリプトを使用したインストールと自動起動の例:
 
 ```bash
 curl -sfL https://get.k3s.io | sh -
 ```
 
-When running the server manually you should get an output similar to:
+サーバーを手動で実行すると、次のような出力が表示されます:
 
 ```
 $ k3s server
@@ -35,13 +35,12 @@ INFO[2019-01-22T15:16:20.541027133-07:00] Wrote kubeconfig /etc/rancher/k3s/k3s.
 INFO[2019-01-22T15:16:20.541049100-07:00] Run: k3s kubectl                             
 ```
 
-The output will likely be much longer as the agent will create a lot of logs. By default the server
-will register itself as a node (run the agent).
+エージェントが大量のログを作成するため、出力はかなり長くなります。デフォルトでは、サーバー自身をノードとして登録します(エージェントを実行します)。
 
 Alpine Linux
 ------------
 
-In order to pre-setup Alpine Linux you have to go through the following steps:
+Alpine Linuxを利用するには事前に以下のステップを実行する必要があります:
 
 ```bash
 echo "cgroup /sys/fs/cgroup cgroup defaults 0 0" >> /etc/fstab
@@ -60,34 +59,33 @@ cpu = /cgroup/cpu;
 EOF
 ```
 
-Then update **/etc/update-extlinux.conf** by adding:
+それから以下を追加 **/etc/update-extlinux** を修正します:
 
 ```
 default_kernel_opts="...  cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory"
 ```
 
-Then update the config and reboot:
+次に設定を更新してリブートします:
 
 ```bash
 update-extlinux
 reboot
 ```
 
-After rebooting:
+再起動後:
 
-- download **k3s** to **/usr/local/bin/k3s**
-- create an openrc file in **/etc/init.d**
+- **k3s** を **/usr/local/bin/k3s** へダウンロード
+- **/etc/init.d** にopenrcファイルを作成
 
-Running in Docker (and docker-compose)
+Dockerで動かす(docker-composeを利用)
 -----------------
 
-[k3d](https://github.com/rancher/k3d) is a utility designed to easily run K3s in Docker. It can be installed via the [brew](https://brew.sh/) utility for MacOS.
+[k3d](https://github.com/rancher/k3d)はDockerで簡単にK3を実行できるように設計されたユーティリティです。このユーティリティは、MacOSの場合は[brew](https://brew.sh/)ユーティリティを使用してインストールできます。
 
-`rancher/k3s` images are also available to run K3s server and agent from Docker.  A `docker-compose.yml` is in the root of the K3s repo that
-serves as an example of how to run K3s from Docker.  To run from `docker-compose` from this repo run:
+`rancher/k3s` イメージはDockerからK3sサーバとエージェントを実行するためにも利用できます。`docker-compose.yml` はK3sリポジトリのルートにあるのでDockerからK3sを実行する方法の一例です。このレポジトリから `docker-compose` を使って起動するにはいかのようにします:
 
     docker-compose up --scale node=3
-    # kubeconfig is written to current dir
+    # kubeconfig はカレントディレクトリに書かれます
     kubectl --kubeconfig kubeconfig.yaml get node
 
     NAME           STATUS   ROLES    AGE   VERSION
@@ -95,7 +93,7 @@ serves as an example of how to run K3s from Docker.  To run from `docker-compose
     d54c8b17c055   Ready    <none>   11s   v1.13.2-k3s2
     db7a5a5a5bdd   Ready    <none>   12s   v1.13.2-k3s2
 
-To run the agent only in Docker, use `docker-compose up node`. Alternatively the Docker run command can also be used;
+エージェントをDockerだけで実行するには、`docker-compose up node` を使用します。または、Docker runコマンドを使用することもできます:
 
     sudo docker run \
             -d --tmpfs /run \
