@@ -1,33 +1,33 @@
 ---
-title: "Cluster Datastore Options"
+title: "クラスタデータストアオプション"
 weight: 50
 ---
 
-The ability to run Kubernetes using a datastore other than etcd sets K3s apart from other Kubernetes distributions. This feature provides flexibility to Kubernetes operators. The available datastore options allow you to select a datastore that best fits your use case. For example:
+etcd以外のデータストアを使ってKubernetesを実行する機能は他のKubernetesディストリビューションとK3sが大きく違うところです。この機能によりKubernetesを柔軟な運用を可能にします。様々なデータストアを使えることによりユースケースに最適なデータストアを選ぶことができます。
 
-* If your team doesn't have expertise in operating etcd, you can choose an enterprise-grade SQL database like MySQL or PostgreSQL
-* If you need to run a simple, short-lived cluster in your CI/CD environment, you can use the embedded SQLite database
-* If you wish to deploy Kubernetes on the edge and require a highly available solution but can't afford the operational overhead of managing a database at the edge, you can use K3s's embedded HA datastore built on top of DQLite (currently experimental)
+* チームにetcdの操作に関する専門知識がない場合は、MySQLやPostgreSQLなどのエンタープライズグレードのSQLデータベースを利用できます。
+* シンプルで生存期間の短いクラスタをCI/CD環境で実行する必要がある場合は、組み込みSQLiteデータベースを使用できます。
+* エッジにKubernetesをデプロイし、高可用性ソリューションを必要としているが、エッジでデータベースを管理する運用上のオーバーヘッドを許容できない場合、DQLiteで構築されたK3sの組み込みHAデータストアを使用できます(現在試験中)。
 
-K3s supports the following datastore options:
+K3は、オプションとして以下のデータストアをサポートします:
 
-* Embedded [SQLite](https://www.sqlite.org/index.html)
-* [PostgreSQL](https://www.postgresql.org/) (certified against versions 10.7 and 11.5)
-* [MySQL](https://www.mysql.com/) (certified against version 5.7)
-* [etcd](https://etcd.io/) (certified against version 3.3.15)
-* Embedded [DQLite](https://dqlite.io/) for High Availability (experimental)
+* 組み込み [SQLite](https://www.sqlite.org/index.html)
+* [PostgreSQL](https://www.postgresql.org/) (認定されているバージョン 10.7 and 11.5)
+* [MySQL](https://www.mysql.com/) (認定されているバージョン 5.7)
+* [etcd](https://etcd.io/) (認定されているバージョン 3.3.15)
+* 高可用性組み込み [DQLite](https://dqlite.io/) (試験実装)
 
-### External Datastore Configuration Parameters
-If you wish to use an external datastore such as PostgreSQL, MySQL, or etcd you must set the `datastore-endpoint` parameter so that K3s knows how to connect to it. You may also specify parameters to configure the authentication and encryption of the connection. The below table summarizes these parameters, which can be passed as either CLI flags or environment variables.
+### 外部データストア構成パラメータ
+PostgreSQL、MySQL、etcdなどの外部データストアを使用する場合は、K3sが接続方法を認識できるように `datastore-endpoint` パラメータを設定する必要があります。パラメータを指定して、接続の認証と暗号化を構成することもできます。次の表は、CLIフラグまたは環境変数として渡すことができるこれらのパラメータをまとめたものです。
 
-  CLI Flag | Environment Variable | Description
+  CLI フラグ | 環境変数 | 詳細
   ------------|-------------|------------------
- <span style="white-space: nowrap">`--datastore-endpoint`</span> | `K3S_DATASTORE_ENDPOINT` | Specify a PostgresSQL, MySQL, or etcd connection string. This is a string used to describe the connection to the datastore. The structure of this string is specific to each backend and is detailed below.
- <span style="white-space: nowrap">`--datastore-cafile`</span> | `K3S_DATASTORE_CAFILE` | TLS Certificate Authority (CA) file used to help secure communication with the datastore. If your datastore serves requests over TLS using a certificate signed by a custom certificate authority, you can specify that CA using this parameter so that the K3s client can properly verify the certificate. |                              
-|  <span style="white-space: nowrap">`--datastore-certfile`</span> | `K3S_DATASTORE_CERTFILE` | TLS certificate file used for client certificate based authentication to your datastore. To use this feature, your datastore must be configured to support client certificate based authentication. If you specify this parameter, you must also specify the `datastore-keyfile` parameter. |     
-|  <span style="white-space: nowrap">`--datastore-keyfile`</span> | `K3S_DATASTORE_KEYFILE` | TLS key file used for client certificate based authentication to your datastore. See the previous `datastore-certfile` parameter for more details. |
+ <span style="white-space: nowrap">`--datastore-endpoint`</span> | `K3S_DATASTORE_ENDPOINT` | PostgresSQL、MySQL、またはetcd接続文字列を指定します。これは、データストアへの接続を記述するために使用される文字列です。この文字列の構造は各バックエンドに固有で、以下に詳細を示します。|
+ <span style="white-space: nowrap">`--datastore-cafile`</span> | `K3S_DATASTORE_CAFILE` | データストアとの通信のセキュリティ保護に役立つTLS Certificate Authority(CA)ファイル。データストアが、カスタム認証局によって署名された証明書を使用してTLS経由で要求を処理する場合、K3sクライアントが証明書を正しく検証できるように、このパラメータを使用してCAを指定できます。|                              
+|  <span style="white-space: nowrap">`--datastore-certfile`</span> | `K3S_DATASTORE_CERTFILE` | データストアへのクライアント証明書ベースの認証に使用されるTLS証明書ファイル。この機能を使用するには、クライアント証明書ベースの認証をサポートするようにデータストアを構成する必要があります。このパラメーターを指定する場合は、`datastore-keyfile`パラメーターも指定する必要があります。|     
+|  <span style="white-space: nowrap">`--datastore-keyfile`</span> | `K3S_DATASTORE_KEYFILE` | データストアへのクライアント証明書ベースの認証に使用されるTLSキーファイル。詳細については、前述の `datastore-certfile` パラメータを参照してください。|
 
-As a best practice we recommend setting these parameters as environment variables rather than command line arguments so that your database credentials or other sensitive information aren't exposed as part of the process info.
+データベース資格情報やその他の機密情報がプロセス情報の一部として公開されないように、これらのパラメータをコマンドライン引数ではなく環境変数として設定することをお勧めします。
 
 ### Datastore Endpoint Format and Functionality
 As mentioned, the format of the value passed to the `datastore-endpoint` parameter is dependent upon the datastore backend. The following details this format and functionality for each supported external datastore.
