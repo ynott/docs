@@ -3,20 +3,20 @@ title: FAQ
 weight: 60
 ---
 
-FAQは定期的に更新され、ユーザーがK3sについて最もよく尋ねられる質問に回答するようにしています。
+The FAQ is updated periodically and designed to answer the questions our users most frequently ask about K3s.
 
-**K3sはK8sの代替品として適していますか?**
+**Is K3s a suitable replacement for k8s?**
 
-K3sはk8sができることのほとんど全てが可能です。K8sより軽量なバージョンです。詳細については、[メイン]({{<baseurl>}}/k3s/latest/en/) のドキュメントページを参照してください。
+K3s is capable of nearly everything k8s can do. It is just a more lightweight version. See the [main]({{<baseurl>}}/k3s/latest/en/) docs page for more details.
 
-**Traefikの代わりに自分のIngressを使うにはどうすればいいですか?**
+**How can I use my own Ingress instead of Traefik?**
 
-単に `--no-deploy=traefik` でK3sサーバを起動し、ingressをデプロイして利用します。
+Simply start K3s server with `--no-deploy=traefik` and deploy your ingress.
 
-**K3sはWindowsをサポートしていますか?**
+**Does K3s support Windows?**
 
-現時点では、K3sはWindowsをネイティブにサポートしていませんが、私たちは将来的にはそのアイデアが実現されることを願っています。
+At this time K3s does not natively support Windows, however we are open to the idea in the future.
 
-**ソースからビルドする方法は?**
+**How can I build from source?**
 
-手順については、K3s[BUILDING.md](https://github.com/rancher/k3s/blob/master/BUILDING.md) を参照してください。
+Please reference the K3s [BUILDING.md](https://github.com/rancher/k3s/blob/master/BUILDING.md) with instructions.
