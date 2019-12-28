@@ -1,13 +1,13 @@
 ---
-title: 既知の問題
+title: Known Issues
 weight: 70
 ---
-「既知の問題」は定期的に更新され、次のリリースにあるすぐには対処できないかもしれない問題について情報共有するようようにしています。
+The Known Issues are updated periodically and designed to inform you about any issues that may not be immediately addressed in the next upcoming release.
 
 **Snap Docker**
 
-K3sをdockerとともに使用することを計画している場合、K3sの実行時に問題が発生することが知られているため、スナップパッケージを使用してDockerをインストールすることはお勧めしません。
+If you plan to use K3s with docker, Docker installed via a snap package is not recommended as it has been known to cause issues running K3s.
 
 **Iptables**
 
-古いiptablesではなくnftablesモードでiptablesを実行している場合、問題が発生する可能性があります。問題を避けるために、新しいiptables(1.6.1+など)を使うことをお勧めします。
+If you are running iptables in nftables mode instead of legacy you might encounter issues. We recommend utilizing newer iptables (such as 1.6.1+) to avoid issues.
