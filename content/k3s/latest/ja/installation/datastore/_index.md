@@ -79,12 +79,12 @@ K3sの[既知の問題](https://github.com/rancher/k3s/issues/1093) のため、
 {{% /tab %}}
 {{% /tabs %}}
 
-<br/>上記に基づき、以下のコマンド例を使用して、k3sという名前のPostgresSQLデータベースに接続するサーバインスタンスを起動することができます:
+<br/>上記にのことから、以下のようなコマンドを使用するとk3sという名前のPostgresSQLデータベースに接続するサーバインスタンスを起動することができます:
 ```
 K3S_DATASTORE_ENDPOINT='postgres://username:password@hostname:5432/k3s' k3s server
 ```
 
-また、次の例は、クライアント証明書認証を使用してMySQLデータベースに接続するために使用できます。
+また、次の例はクライアント証明書を使用してMySQLデータベースに接続します。
 ```
 K3S_DATASTORE_ENDPOINT='mysql://username:password@tcp(hostname:3306)/k3s' \
 K3S_DATASTORE_CERTFILE='/path/to/client.crt' \
@@ -93,4 +93,4 @@ k3s server
 ```
 
 ### HA向け組み込みDQLite(試験実装)
-K3sのDQLiteの使い方はSQLiteの使い方と似ています。セットアップと操作は簡単です。このため、このオプションを使用するための外部設定や追加手順はありません。このオプションを使用してを実行する方法については、[組み込みDB(実験)による高可用性]({{<ベースURL>}}/k3s/latest/ja/installation/ha-embedded/)を参照してください。
+K3sで利用されるDQLiteの使い方はSQLiteと似ています。操作方法とセットアップは簡単です。そのため、このオプションを使用するための外部設定や追加手順は必要ありません。このオプションを使用してを実行する方法については、[(試験的)組み込みDBによる高可用性]({{< baseurl >}}/k3s/latest/en/installation/ha-embedded/) を参照してください。
