@@ -29,63 +29,62 @@ PostgreSQL、MySQL、etcdなどの外部データストアを使用する場合�
 
 データベース資格情報やその他の機密情報がプロセス情報の一部として公開されないように、これらのパラメータをコマンドライン引数ではなく環境変数として設定することをお勧めします。
 
-### Datastore Endpoint Format and Functionality
-As mentioned, the format of the value passed to the `datastore-endpoint` parameter is dependent upon the datastore backend. The following details this format and functionality for each supported external datastore.
+### データストアのエンドポイントの形式と機能
+前述のように、 `datastore-endpoint` パラメータに渡される値の形式は、データストアバックエンドに依存します。次に、それぞれサポートされている外部データストアの形式と機能の詳細を示します。
 
 {{% tabs %}}
 {{% tab "PostgreSQL" %}}
 
-In its most common form, the datastore-endpoint parameter for PostgreSQL has the following format:
+最も一般的な形式では、PostgreSQLのdatastore-endpointパラメータは以下の形式です:
 
 `postgres://username:password@hostname:port/database-name`
 
-More advanced configuration parameters are available. For more information on these, please see https://godoc.org/github.com/lib/pq.
+より高度な設定パラメータを使用できます。詳細については、https://godoc.org/github.com/lib/pq を参照してください。
 
-If you specify a database name and it does not exist, the server will attempt to create it.
+指定したデータベース名が存在しない場合、サーバーはそのデータベース名を作成しようとします。
 
-If you only supply `postgres://`  as the endpoint, K3s will attempt to do the following:
+エンドポイントとして `postgres://` のみを指定すると、K3sは以下のことを実行しようとします:
 
-* Connect to localhost using `postgres` as the username and password
-* Create a database named `kubernetes`
-
+* ユーザ名とパスワードに`postgres'を使用してlocalhostに接続します
+* `kubernetes` という名前のデータベースを作成します
 
 {{% /tab %}}
 {{% tab "MySQL" %}}
 
-In its most common form, the `datastore-endpoint` parameter for MySQL has the following format:
+最も一般的な形式では、MySQLの `datastore-endpoint` パラメータは次の形式です:
 
 `mysql://username:password@tcp(hostname:3306)/database-name`
 
-More advanced configuration parameters are available. For more information on these, please see https://github.com/go-sql-driver/mysql#dsn-data-source-name
+より高度な設定パラメータを使用できます。詳細については、https://github.com/go-sql-driver/mysql#dsn-data-source-name を参照してください。
 
-Note that due to a [known issue](https://github.com/rancher/k3s/issues/1093) in K3s, you cannot set the `tls` parameter. TLS communication is supported, but you cannot, for example, set this parameter to "skip-verify" to cause K3s to skip certificate verification.
+K3sの[既知の問題](https://github.com/rancher/k3s/issues/1093) のため、`tls` パラメータを指定できません。TLS通信はサポートされますが、たとえば、このパラメータに "skip-verify" に設定して、K3sで証明書の検証をスキップすることができません。
 
-If you specify a database name and it does not exist, the server will attempt to create it.
+指定したデータベース名が存在しない場合、サーバーはそのデータベース名を作成しようとします。
 
-If you only supply `mysql://` as the endpoint, K3s will attempt to do the following:
+エンドポイントとして`mysql://`のみを指定すると、K3sは以下のことを実行しようとします:
 
-* Connect to the MySQL socket at `/var/run/mysqld/mysqld.sock` using the `root` user and no password
-* Create a database with the name `kubernetes`
+* MySQLソケット `/var/run/mysqld/mysqld.sock` に接続します。`root` ユーザーを使用し、パスワードを使用しません
+* `kubernetes` という名前のデータベースを作成します
 
 
 {{% /tab %}}
 {{% tab "etcd" %}}
 
-In its most common form, the `datastore-endpoint` parameter for etcd has the following format:
+最も一般的な形式では、etcdの `datastore-endpoint` パラメータの形式は次のとおりです:
 
 `https://etcd-host-1:2379,https://etcd-host-2:2379,https://etcd-host-3:2379`
 
-The above assumes a typical three node etcd cluster. The parameter can accept one more comma separated etcd URLs.
+上記は、典型的な3ノードのetcdクラスタを想定しています。パラメータには、もう1つカンマ区切りのetcd URLを指定できます。
 
 {{% /tab %}}
 {{% /tabs %}}
 
-<br/>Based on the above, the following example command could be used to launch a server instance that connects to a PostgresSQL database named k3s:
+<br/>上記に基づき、以下のコマンド例を使用して、k3sという名前のPostgresSQLデータベースに接続するサーバインスタンスを起動することができます:
 ```
 K3S_DATASTORE_ENDPOINT='postgres://username:password@hostname:5432/k3s' k3s server
 ```
 
-And the following example could be used to connect to a MySQL database using client certificate authentication:
+また、次の例は、クライアント証明書認証を使用してMySQLデータベースに接続するために使用できます。
 ```
 K3S_DATASTORE_ENDPOINT='mysql://username:password@tcp(hostname:3306)/k3s' \
 K3S_DATASTORE_CERTFILE='/path/to/client.crt' \
@@ -93,5 +92,5 @@ K3S_DATASTORE_KEYFILE='/path/to/client.key' \
 k3s server
 ```
 
-### Embedded DQLite for HA (Experimental)
-K3s's use of DQLite is similar to its use of SQLite. It is simple to setup and manage. As such, there is no external configuration or additional steps to take in order to use this option. Please see [High Availability with Embedded DB (Experimental)]({{< baseurl >}}/k3s/latest/en/installation/ha-embedded/) for instructions on how to run with this option.
+### HA向け組み込みDQLite(試験実装)
+K3sのDQLiteの使い方はSQLiteの使い方と似ています。セットアップと操作は簡単です。このため、このオプションを使用するための外部設定や追加手順はありません。このオプションを使用してを実行する方法については、[組み込みDB(実験)による高可用性]({{<ベースURL>}}/k3s/latest/ja/installation/ha-embedded/)を参照してください。
