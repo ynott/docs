@@ -1,14 +1,14 @@
 ---
-title: "Volumes and Storage"
+title: "ボリュームとストレージ"
 weight: 30
 ---
 
-When deploying an application that needs to retain data, you’ll need to create persistent storage. Persistent storage allows you to store application data external from the pod running your application. This storage practice allows you to maintain application data, even if the application’s pod fails.
+データを保持する必要があるアプリケーションを導入する場合は、永続ストレージを作成する必要があります。永続ストレージを使用すると、アプリケーションを実行するポッドの外部にアプリケーションデータを格納できます。このストレージの利用により、アプリケーションのポッドに障害が発生した場合でも、アプリケーション・データを維持します。
 
-# Local Storage Provider
-K3s comes with Rancher's Local Path Provisioner and this enables the ability to create persistent volume claims out of the box using local storage on the respective node. Below we cover a simple example. For more information please reference the official documentation [here](https://github.com/rancher/local-path-provisioner/blob/master/README.md#usage).
+# ローカルストレージプロバイダ
+K3sにはRancherのLocal Path Provisionerが付属していて、最初から各ノードのローカルストレージを使用して永続ボリュームクレームを作成することができるようになっています。以下に簡単な例を示します。詳細については、公式ドキュメントの [ここ](https://github.com/rancher/local-path-provisioner/blob/master/README.md#usage) を参照してください。
 
-Create a hostPath backed persistent volume claim and a pod to utilize it:
+hostPathによってバックアップされた永続ボリュームクレームとそれを使用するポッドを作成する:
 
 ### pvc.yaml
 
@@ -51,33 +51,33 @@ spec:
       claimName: local-path-pvc
 ```
 
-Apply the yaml `kubectl create -f pvc.yaml` and `kubectl create -f pod.yaml`
+`kubectl create -f pvc.yaml` と `kubectl create -f pod.yaml` で yamlファイルを適用する
 
-Confirm the PV and PVC are created. `kubectl get pv` and `kubectl get pvc` The status should be Bound for each.
+PV と PVC が作られたのを確認します。`kubectl get pv` と `kubectl get pvc` のコマンドでそれぞれ bound になっている必要があります。
 
 # Longhorn
 
 [comment]: <> (pending change - longhorn may support arm64 and armhf in the future.)
 
-> **Note:** At this time Longhorn only supports amd64.
+> **注:** 現時点では、Longhornはamd64のみをサポートしています。
 
-K3s supports [Longhorn](https://github.com/longhorn/longhorn). Below we cover a simple example. For more information please reference the official documentation [here](https://github.com/longhorn/longhorn/blob/master/README.md).
+K3sは[ロングホーン] (https://github.com/longhorn/longhorn)をサポートします。以下に簡単な例を示します。詳細については、公式ドキュメント[ここ](https://github.com/longhorn/longhorn/blob/master/README.md) を参照してください。
 
-Apply the longhorn.yaml to install Longhorn.
+longhorn.yamlを適用してLonghornをインストールします。
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
 ```
 
-Longhorn will be installed in the namespace `longhorn-system`.
+Longhornは `longhorn-system` という名前空間にインストールされます。
 
-Before we create a PVC, we will create a storage class for longhorn with this yaml.
+PVCを作成する前に、このyamlを使用してLonghorn用のストレージクラスを作成します。
 
 ```
 kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/master/examples/storageclass.yaml
 ```
 
-Now, apply the following yaml to create the PVC and pod with `kubectl create -f pvc.yaml` and `kubectl create -f pod.yaml`
+ここで、次のyamlを適用してPVCとポッドを `kubectl create-f pvc.yaml` と `kubectl create-f pod.yaml` で作成します。
 
 ### pvc.yaml
 
@@ -119,4 +119,4 @@ spec:
       claimName: longhorn-volv-pvc
 ```
 
-Confirm the PV and PVC are created. `kubectl get pv` and `kubectl get pvc` The status should be Bound for each.
+PVとPVCが作成されていることを確認します。`kubectlget pv` と `kubectlget pvc` のステータスはそれぞれBoundになっている必要があります。
