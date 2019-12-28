@@ -1,35 +1,36 @@
 ---
-title: "Upgrades"
+title: "アップグレード"
 weight: 25
 ---
 
->**Note:** When upgrading, upgrade server nodes first one at a time then any worker nodes.
+>**注:** アップグレード時には、まずサーバノードを1つずつアップグレードしてから、ワーカノードをアップグレードします。
 
-To upgrade K3s from an older version you can re-run the installation script using the same flags, for example:
+K3sを古いバージョンからアップグレードするには、同じフラグを使用してインストールスクリプトを再実行します。次に例を示します:
 
 ```sh
 curl -sfL https://get.k3s.io | sh -
 ```
 
-If you want to upgrade to specific version you can run the following command:
+特定のバージョンにアップグレードする場合は、次の様にコマンドを実行します:
 
 ```sh
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=vX.Y.Z-rc1 sh -
 ```
 
-Or to manually upgrade K3s:
+または、K3sを手動でアップグレードします:
 
-1. Download the desired version of K3s from [releases](https://github.com/rancher/k3s/releases/latest)
-2. Install to an appropriate location (normally `/usr/local/bin/k3s`)
-3. Stop the old version
-4. Start the new version
+1. 必要なバージョンのK3sを[リリース](https://github.com/rancher/k3s/releases/latest)からダウンロードします。
+2. 適切な場所にインストールします(通常は `/usr/local/bin/k3s`)
+3. 古いバージョンを停止
+4. 新しいバージョンを起動
 
-Restarting K3s is supported by the installation script for systemd and openrc.
-To restart manually for systemd use:
+K3sの再起動は、systemdおよびopenrcに対するインストールスクリプトでサポートされています。
+systemdの場合、手動で再起動するには、次のコマンドを使用します:
 ```sh
 sudo systemctl restart k3s
 ```
 
+openrcの場合、手動で再起動するには、次のコマンドを使用します:
 To restart manually for openrc use:
 ```sh
 sudo service k3s restart
