@@ -1,22 +1,23 @@
 ---
-title: "High Availability with Embedded DB (Experimental)"
+title: "組み込みDB(試験実装)による高可用性"
 weight: 40
 ---
 
-As of v1.0.0, K3s is previewing support for running a highly available control plane without the need for an external database. This means there is no need to manage an external etcd or SQL datastore in order to run a reliable production-grade setup. While this feature is currently experimental, we expect it to be the primary architecture for running HA K3s clusters in the future.
+v 1.0.0では、K3sは外部データベースを必要とせずに高可用性コントロールプレーンを実行するためのプレビューをサポートしています。つまり、信頼性の高い本番グレードのセットアップを実行するために、外部etcdやSQLデータストアを管理する必要はありません。この機能は現在試験的なものですが、将来的にはHA K3sクラスタを実行するための主要なアーキテクチャになると考えられます。
 
-This architecture is achieved by embedding a dqlite database within the K3s server process. DQLite is short for "distributed SQLite." According to https://dqlite.io, it is "*a fast, embedded, persistent SQL database with Raft consensus that is perfect for fault-tolerant IoT and Edge devices.*" This makes it a natural fit for K3s.
+このアーキテクチャは、K3sサーバプロセス内にdqliteデータベースを組み込むことで実現します。DQLiteは"分散SQLite"の略で、https://dqlite.io によると「*堅牢なIoTデバイスやEdgeデバイスに最適なRaftのコンセンサスによる高速で埋め込み型の永続的SQLデータベース*」とのことです。K3sで利用することはとても自然な流れです。
 
-To run K3s in this mode, you must have an odd number of server nodes. We recommend starting with three nodes.
+このモードでK3sを実行するには、奇数のサーバーノードが必要です。3つのノードから開始することをお勧めします。
 
-To get started, first launch a server node with the `cluster-init` flag to enable clustering and a token that will be used as a shared secret to join additional servers to the cluster.
+まず、追加のサーバをクラスタに追加するための共有シークレットキーとして使用されるトークンを定義して、`cluster-init` フラグを付けてクラスタ化を有効にした状態でサーバノードを起動します。
 ```
 K3S_TOKEN=SECRET k3s server --cluster-init
 ```
 
-After launching the first server, join the second and third servers to the cluster using the shared secret:
+最初のサーバーを起動した後、共有シークレットを使用して2番目と3番目のサーバーをクラスターに参加させます:
 ```
 K3S_TOKEN=SECRET k3s server --server https://<ip or hostname of server1>:6443
 ```
 
-Now you have a highly available control plane. Joining additional worker nodes to the cluster follows the same procedure as a single server cluster.
+これで、高可用性のコントロールプレーンができました。後の追加のワーカーノードをクラスタに追加する手順は、単一サーバークラスタと同じになります。
+
