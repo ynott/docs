@@ -1,38 +1,38 @@
 ---
-title: "Networking"
+title: "ネットワーク"
 weight: 35
 ---
 
->**Note:** CNI options are covered in detail on the [Installation Network Options]({{< baseurl >}}/k3s/latest/en/installation/network-options/) page. Please reference that page for details on Flannel and the various flannel backend options or how to set up your own CNI.
+>**注:** CNIオプションの詳細については、[インストールネットワークオプション]({{< baseurl >}}/k3s/latest/ja/installation/network-options/)ページを参照してください。Flannelと様々なflannelバックエンドオプションの詳細や、独自のCNIの設定方法についても、そのページを参照してください。
 
-Open Ports
+オープンポート
 ----------
-Please reference the [Node Requirements]({{< baseurl >}}/k3s/latest/en/installation/node-requirements/#networking) page for port information.
+ポート情報については、[ノード要件]({{< baseurl >}}/k3s/latest/ja/installation/node-requirements/#networking)ページを参照してください。
 
 CoreDNS
 -------
 
-CoreDNS is deployed on start of the agent, to disable run each server with the `--no-deploy coredns` option.
+CoreDNSはエージェントの起動時にデプロイされます。無効にする場合は、`--no-deploy coredns` オプションを付けて実行します。
 
-If you don't install CoreDNS you will need to install a cluster DNS provider yourself.
+CoreDNSをインストールしない場合は、クラスタにDNSプロバイダを自分でインストールする必要があります。
 
-Traefik Ingress Controller
+Traefik イングレスコントローラー
 --------------------------
 
-Traefik is deployed by default when starting the server. For more information see [Auto Deploying Manifests]({{< baseurl >}}/k3s/latest/en/configuration/#auto-deploying-manifests). The default config file is found in `/var/lib/rancher/k3s/server/manifests/traefik.yaml` and any changes made to this file will automatically be deployed to Kubernetes in a manner similar to `kubectl apply`.
+Traefikは、サーバーの起動時にデフォルトでデプロイされます。詳細については、[マニフェストの自動配布]({{< baseurl >}}/k3s/latest/ja/configuration/#auto-deploying-manifists)を参照してください。デフォルトの設定ファイルは `/var/lib/rancher/k3s/server/manifests/traefik.yaml` にあります。このファイルに加えられた変更は `kubectl apply` と同じように自動的にKubernetesに展開されます。
 
-The Traefik ingress controller will use ports 80, 443, and 8080 on the host (i.e. these will not be usable for HostPort or NodePort).
+Traefikイングレスコントローラは、ホストのポート80,443および8080を使用します(つまり、これらはHostPortまたはNodePortでは使用できません)。
 
-You can tweak traefik to meet your needs by setting options in the traefik.yaml file.
-Reference the official [Traefik for Helm Configuration Parameters](https://github.com/helm/charts/tree/master/stable/traefik#configuration) readme for more information.
+必要があれば、traefik.yamlファイルのオプションを設定することでtraefikを調整できます。
+詳細については、公式の[TraefikのHelm設定パラメータ] (https://github.com/helm/charts/tree/master/stable/traefik#configuration)のreadmeを参照してください。
 
-To disable it, start each server with the `--no-deploy traefik` option.
+これを無効にするには、`--no-deploy traefik'オプションを指定して各サーバーを起動します。
 
-Service Load Balancer
+サービスロードバランサー
 ---------------------
 
-K3s includes a basic service load balancer that uses available host ports.  If you try to create
-a load balancer that listens on port 80, for example, it will try to find a free host in the cluster
-for port 80.  If no port is available the load balancer will stay in Pending.
+K3sには、空いているホストポートを使用する基本的なサービスロードバランサが含まれています。
+たとえば、ポート80でリスニングするロード・バランサを作成しようとすると、クラスタ内でポート80が空いている
+ホストを検索しようとします。使用可能なポートがない場合、ロード・バランサーは 保留中のままになります。
 
-To disable the embedded load balancer run the server with the `--no-deploy servicelb` option. This is necessary if you wish to run a different load balancer, such as MetalLB.
+組み込みロードバランサーを無効にするには、`--no-deploy servicelb` オプションを指定してサーバーを起動します。MetalLBなどの別のロードバランサーを実行する場合に使用してください。
