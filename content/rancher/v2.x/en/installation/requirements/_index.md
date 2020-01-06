@@ -1,5 +1,6 @@
 ---
 title: Installation Requirements
+description: Learn the node requirements for each node running Rancher server when you’re configuring  Rancher to run either in a single-node or high-availability setup
 weight: 1
 aliases:
   - /rancher/v2.x/en/installation/references
@@ -31,13 +32,15 @@ For details on which OS and Docker versions were tested with each Rancher versio
 
 All supported operating systems are 64-bit x86.
 
+The `ntp` (Network Time Protocol) package should be installed. This prevents errors with certificate validation that can occur when the time is not synchronized between the client and server.
+
 > **Note:** Some distributions of Linux derived from RHEL, including Oracle Linux, may have default firewall rules that block communication with Helm. This [how-to guide]({{<baseurl>}}/rancher/v2.x/en/installation/options/firewall) shows how to check the default firewall rules and how to open the ports with `firewalld` if necessary.
 
 If you plan to run Rancher on ARM64, see [Running on ARM64 (Experimental).]({{<baseurl>}}/rancher/v2.x/en/installation/options/arm64-platform/)
 
 ### Installing Docker
 
-Docker can be installed by following the steps in the offical [Docker documentation.](https://docs.docker.com/) Rancher also provides [scripts]({{<baseurl>}}/rancher/v2.x/en/installation/requirements/installing-docker) to install Docker with one command.
+Docker can be installed by following the steps in the official [Docker documentation.](https://docs.docker.com/) Rancher also provides [scripts]({{<baseurl>}}/rancher/v2.x/en/installation/requirements/installing-docker) to install Docker with one command.
 
 # Hardware Requirements
 
@@ -161,14 +164,14 @@ TCP/UDP | 30000-32767 | Any source that consumes NodePort services | NodePort po
 Protocol | Port | Source | Destination | Description
 -----------|------|----------|---------------|--------------
 TCP | 22 | RKE node | Any node configured in Cluster Configuration File | SSH provisioning of node by RKE
-TCP | 443 | Rancher nodes | Rancher agent | 
-TCP | 2379 | etcd nodes | etcd client requests | 
-TCP | 2380 | etcd nodes | etcd peer communication | 
+TCP | 443 | Rancher nodes | Rancher agent |
+TCP | 2379 | etcd nodes | etcd client requests |
+TCP | 2380 | etcd nodes | etcd peer communication |
 TCP | 6443 | RKE node | controlplane nodes | Kubernetes API server
-TCP | 6443 | controlplane nodes | Kubernetes API server | 
-UDP | 8472 | etcd nodes, controlplane nodes, and worker nodes | Canal/Flannel VXLAN overlay networking | 
-TCP | 9099 | the node itself (local traffic, not across nodes) | Canal/Flannel livenessProbe/readinessProbe | 
-TCP | 10250 | etcd nodes, controlplane nodes, and worker nodes | kubelet | 
+TCP | 6443 | controlplane nodes | Kubernetes API server |
+UDP | 8472 | etcd nodes, controlplane nodes, and worker nodes | Canal/Flannel VXLAN overlay networking |
+TCP | 9099 | the node itself (local traffic, not across nodes) | Canal/Flannel livenessProbe/readinessProbe |
+TCP | 10250 | etcd nodes, controlplane nodes, and worker nodes | kubelet |
 TCP | 10254 | the node itself (local traffic, not across nodes) | Ingress controller livenessProbe/readinessProbe
 
 The ports that need to be opened for each node depend on the node's Kubernetes role: etcd, controlplane, or worker. If you installed Rancher on a Kubernetes cluster that doesn't have all three roles on each node, refer to the [port requirements for the Rancher Kubernetes Engine (RKE).]({{<baseurl>}}/rke/latest/en/os/#ports) The RKE docs show a breakdown of the port requirements for each role.
@@ -188,12 +191,16 @@ The following diagram depicts the ports that are opened for each [cluster type](
 
 The following tables break down the port requirements for inbound and outbound traffic:
 
+**Note** Rancher nodes may also require additional outbound access for any external [authentication provider]({{< baseurl >}}/rancher/v2.x/en/admin-settings/authentication/) which is configured (LDAP for example).
+
+
 <figcaption>Inbound Rules for Rancher Nodes</figcaption>
 
 | Protocol | Port | Source                                                                                                                                                                                | Description                                          |
 | -------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | TCP      | 80   | Load balancer/proxy that does external SSL termination                                                                                                                                | Rancher UI/API when external SSL termination is used |
 | TCP      | 443  | <ul><li>etcd nodes</li><li>controlplane nodes</li><li>worker nodes</li><li>hosted/imported Kubernetes</li><li>any source that needs to be able to use the Rancher UI or API</li></ul> | Rancher agent, Rancher UI/API, kubectl               |
+
 
 <figcaption>Outbound Rules for Rancher Nodes</figcaption>
 
