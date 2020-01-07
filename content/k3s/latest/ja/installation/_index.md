@@ -16,4 +16,4 @@ weight: 20
 
 ### アンインストール
 
-`install.sh`スクリプトを使ってK3をインストールした場合、アンインストールスクリプトは、ノードの`/usr/local/bin/k3s-uninstall.sh`(または`k3s-agent-uninstall.sh`)に作成されます。
+`install.sh`スクリプトを使ってK3をインストールした場合、アンインストールスクリプトが作成されます。アンインストールスクリーンセーバーは、ノードの`/usr/local/bin/k3s-uninstall.sh`(エージェントの場合は、`k3s-agent-uninstall.sh`)に作成されます。
