@@ -19,6 +19,8 @@ K3sはどんな種類のLinuxでも動くはずです。ただし、K3sは次の
 *    Ubuntu 18.04 (amd64)
 *    Raspbian Buster (armhf)
 
+> Alpine Linuxを利用する場合、追加作業として[こちらの作業]({{<baseurl>}}/k3s/latest/en/advanced/#additional-preparation-for-alpine-linux-setup)を実施してください。
+
 ## ハードウェア要件
 
 ハードウェア要件は、デプロイサイズにより増減します。ここでは、最小での推奨構成について説明します。

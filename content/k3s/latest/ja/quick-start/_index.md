@@ -3,7 +3,9 @@ title: "クイックスタートガイド"
 weight: 10
 ---
 
->**注意:** このガイドでは、デフォルトオプションを使用してクラスタをすばやく起動する方法について説明します。[インストールセクション](../installation)では、K3の設定方法について詳しく説明しています。
+ここでは、デフォルトオプションを使用してクラスタをすばやく起動する方法について説明します。K3sの設定方法については、[インストールセクション](../installation)で詳しく説明しています。
+
+K3sのコンポーネントがそれぞれどのように連携するかについては、[アーキテクチャ]({{<baseurl>}}/k3s/latest/en/architecture/#high-availability-with-an-external-db)を参照してください。
 
 > Kubernetesは初めてですか？Kubernetesの基本的なことを概説した素晴らしいチュートリアルが公式ドキュメントの[こちら](https://kubernetes.io/docs/tutorials/kubernetes-basics/)にあります。
 
@@ -18,7 +20,7 @@ curl -sfL https://get.k3s.io | sh -
 
 * K3sサービスは、ノードの再起動後、またはプロセスがクラッシュまたは強制終了した場合に自動的に再起動するように設定されます。
 * `kubectl`、`crictl`、`ctr`、`k3s-killall`と`k3s-uninstall.sh` などの追加ユーティリティがインストールされます。
-* kubeconfigファイルは`/etc/rancher/k3s/k3s.yaml`に書き込まれ、K3sがインストールしたkubectlで自動的に使用されます。
+* [kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)ファイルは`/etc/rancher/k3s/k3s.yaml`に書き込まれ、K3sがインストールしたkubectlで自動的に使用されます。
 
 ワーカーノードにインストールしてクラスタに追加するには、環境変数 `K3S_URL` および `K3S_TOKEN` を使用してインストールスクリプトを実行します。Workerノードを追加する方法は以下の通りです:
 
