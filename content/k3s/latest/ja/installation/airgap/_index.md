@@ -1,28 +1,29 @@
 ---
-title: "Air-Gap Install"
+title: "インターネット隔離環境でのインストール"
 weight: 60
 ---
 
-In this guide, we are assuming you have created your nodes in your air-gap environment and have a secure Docker private registry on your bastion server.
+このガイドではインターネット隔離環境にノードが作成されていて、インターネット踏み台サーバ上にセキュアなDockerプライベートレジストリが用意されていることを前提としています。
 
-Installation Outline
+インストールの概要
 --------------------
-1. Prepare Images Directory
-2. Create Registry YAML
-3. Install K3s
+1. イメージディレクトリの準備
+2. レジストリYAMLの作成
+3. K3のインストール
 
-### Prepare Images Directory
-Obtain the images tar file for your architecture from the [releases](https://github.com/rancher/k3s/releases) page for the version of K3s you will be running.
+### イメージディレクトリの準備
+実行したいバージョンのK3sの[リリース](https://github.com/rancher/k3s/releases)ページから、利用するアーキテクチャのイメージtarファイルを入手します。
 
-Place the tar file in the `images` directory before starting K3s on each node, for example:
+K3sを起動する前に、各ノードでtarファイルを`images`ディレクトリに配置します。次の例のようにします:
 
 ```sh
 sudo mkdir -p /var/lib/rancher/k3s/agent/images/
 sudo cp ./k3s-airgap-images-$ARCH.tar /var/lib/rancher/k3s/agent/images/
 ```
 
-### Create Registry YAML
-Create the registries.yaml file at `/etc/rancher/k3s/registries.yaml`. This will tell K3s the necessary details to connect to your private registry.
+### レジストリYAMLの作成
+registries.yamlファイルを`/etc/rancher/k3s/registries.yaml`に作成します。ここにk3sがプライベートレジストリに接続するための必要な詳細情報を設定します。
+接続する前に必要な情報のregistries.yamlファイルは次のようになります。
 The registries.yaml file should look like this before plugging in the necessary information:
 
 ```
@@ -42,38 +43,37 @@ configs:
       ca_file: <path to the ca file used in the registry>
 ```
 
-Note, at this time only secure registries are supported with K3s (SSL with custom CA)
+注意：現時点では、セキュアレジストリ(独自CAのSSL)のみK3sでサポートします。
 
-### Install K3s
+### K3sのインストール
 
-Obtain the K3s binary from the [releases](https://github.com/rancher/k3s/releases) page, matching the same version used to get the airgap images tar.
-Also obtain the K3s install script at https://get.k3s.io
+[リリース](https://github.com/rancher/k3s/releases)ページからK3sバイナリを取得します。これは、インターネット隔離環境のイメージtarと同じバージョンです。
+同様に、https://get.k3s.io からK3sインストールスクリプトをダウンロードします。
 
-Place the binary in `/usr/local/bin` on each node.
-Place the install script anywhere on each node, name it `install.sh`.
+バイナリーをそれぞれのノードの`/usr/local/bin`に配置します。
+インストールスクリプトをそれぞれのノードに配置して、ファイル名を`install.sh`にします。
 
-Install K3s on each server:
+各サーバにK3をインストールします:
 
 ```
 INSTALL_K3S_SKIP_DOWNLOAD=true ./install.sh
 ```
 
-Install K3s on each agent:
+それぞれエージェントをインストールします:
 
 ```
 INSTALL_K3S_SKIP_DOWNLOAD=true K3S_URL=https://myserver:6443 K3S_TOKEN=mynodetoken ./install.sh
 ```
 
-Note, take care to ensure you replace `myserver` with the IP or valid DNS of the server and replace `mynodetoken` with the node-token from the server.
-The node-token is on the server at `/var/lib/rancher/k3s/server/node-token`
+注意点は、`myserver`をサーバーのIPまたは有効なDNSに置き換えること、`mynodetoken`をサーバーからのノードトークンに置き換えることです。
+サーバーのノードトークンは、`/var/lib/rancher/k3s/server/node-token` に保存されています。
 
+>**注意:** K3sにはkubeletsの為に`--resolv-conf`フラグも用意しています。これを使うとインターネット隔離環境でDNSを設定するのに便利です。
 
->**Note:** K3s additionally provides a `--resolv-conf` flag for kubelets, which may help with configuring DNS in air-gap networks.
+# アップグレード
 
-# Upgrading
+エアギャップ環境の場合、以下の方法でアップグレードします:
 
-Upgrading an air-gap environment can be accomplished in the following manner:
-
-1. Download the new air-gap images (tar file) from the [releases](https://github.com/rancher/k3s/releases) page for the version of K3s you will be upgrading to. Place the tar in the `/var/lib/rancher/k3s/agent/images/` directory on each node. Delete the old tar file.
-2. Copy and replace the old K3s binary in `/usr/local/bin` on each node. Copy over the install script at https://get.k3s.io (as it is possible it has changed since the last release). Run the script again just as you had done in the past with the same environment variables.
-3. Restart the K3s service (if not restarted automatically by installer).
+1. [リリース](https://github.com/rancher/k3s/releases)ページから、アップグレードしたいバージョンのK3sのインターネット隔離環境用イメージ(tarファイル)をダウンロードします。全てのノードの`/var/lib/rancher/k3s/agent/images/`に保存して、古いtarファイルは削除します。
+2. 全てのノードの`/usr/local/bin`にある古いK3sバイナリーをコピーして置き換えて、https://get.k3s.ioから(できるだけ新しい最新の)をダウンロードしてインストールスクリプトを上書きします。そうして、旧環境と同じ環境変数をインストール時に指定した状態で、スクリプトを再度実行してください。
+3. K3sサービスを再起動(インストーラーで再起動しなかった場合)してください。
