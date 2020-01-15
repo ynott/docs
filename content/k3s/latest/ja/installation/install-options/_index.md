@@ -1,36 +1,35 @@
 ---
-title: "インストールと設定オプション"
+title: "インストールオプション"
 weight: 20
 ---
 
-### インストールスクリプトに対するオプション
-
 本項目では、K3sを最初にセットアップするときに使うオプションについてご紹介します:
 
-- [インストールスクリプトオプション](#インストールスクリプトオプション)
-- [K3sのバイナリーでインストールする方法](#K3sのバイナリーでインストールする方法)
-- [K3sサーバーを動かす時のオプション](#K3sサーバーを動かす時のオプション)
-- [K3sエージェントを動かす時のオプション](#K3sエージェントを動かす時のオプション)
+- [インストールスクリプトのオプション](#インストールスクリプトのオプション)
+- [K3sをバイナリーでインストールする方法](#K3sをバイナリーでインストールする方法)
+- [K3sサーバー起動オプション](#K3sサーバー起動オプション)
+- [K3sエージェント起動オプション](#K3sエージェント起動オプション)
 
 より詳細なオプションについての内容は、[こちら]({{<baseurl>}}/k3s/latest/en/advanced)を参照してください。
 
-# インストールスクリプトオプション
+# インストールスクリプトのオプション
 
-[クイックスタートガイド]({{< baseurl >}}/k3s/latest/en/quick-start/)に書かれていたように、systemdやopenrcベースのシステムのサービスとしてK3sをインストールするスクリプトを https://get.k3s.io からダウンロードして利用することができます。
+[クイックスタートガイド]({{< baseurl >}}/k3s/latest/en/quick-start/)に書かれていたように、https://get.k3s.io からダウンロードしたインストールスクリプトを利用すれば、systemdやopenrcベースのシステムでK3sをサービスとしてインストールできます。
 
-以下のようなシンプルなコマンドになります:
+以下のようにシンプルに実行するだけです:
 ```sh
 curl -sfL https://get.k3s.io | sh -
 ```
-この方法を使用してK3をインストールする場合は、次の環境変数を使用してインストールオプションを指定できます:
+
+この方法でK3sをインストールする場合は、インストールオプションとして次の環境変数を指定できます:
 
 - `INSTALL_K3S_SKIP_DOWNLOAD`
 
-    trueに設定すると、K3のハッシュまたはバイナリはダウンロードされません。
+    trueに設定すると、K3sのハッシュまたはバイナリがダウンロードされません。
 
 - `INSTALL_K3S_SYMLINK`
 
-    この環境変数を `skip` に設定するとシンボリックリンクは作成されず、`force` では上書きされます。commandがpathに存在しない場合、defaultではシンボリックリンクになります。
+    この環境変数を`skip`に設定するとシンボリックリンクは作成されず、`force` では上書きされます。コマンドがパスに存在しない場合、通常はシンボリックリンクを作ります。
 
 - `INSTALL_K3S_SKIP_START`
 
@@ -38,27 +37,25 @@ curl -sfL https://get.k3s.io | sh -
 
 - `INSTALL_K3S_VERSION`
 
-    githubからダウンロードするK3sのバージョン。指定されていない場合は、最新バージョンをダウンロードしようとします。
+    githubからダウンロードするK3sのバージョン。指定されていない場合は、最新バージョンをダウンロードします。
 
 - `INSTALL_K3S_BIN_DIR`
 
-    K3sバイナリ、リンク、およびアンインストールスクリプトをインストールするディレクトリを指定します。指定しない場合、`/usr/local/bin` がデフォルトになります。
+    K3sバイナリ、リンク、およびアンインストールスクリプトをインストールするディレクトリを指定します。指定しない場合、`/usr/local/bin`がデフォルトになります。
 
 - `INSTALL_K3S_BIN_DIR_READ_ONLY`
 
-    trueに設定すると、ファイルは `INSTALL_K3S_BIN_DIR` に書き込まれません。強制的に `INSTALL_K3S_SKIP_DOWNLOAD=true` に設定されます。
+    trueに設定すると、ファイルを`INSTALL_K3S_BIN_DIR`に書き込みません。強制的に`INSTALL_K3S_SKIP_DOWNLOAD=true`に設定されます。
 
 - `INSTALL_K3S_SYSTEMD_DIR`
 
-    systemdサービスおよび環境ファイルをインストールするディレクトリ、指定しない場合、`/etc/systemd/system`がデフォルトになります。
+    systemdサービスおよび環境ファイルをインストールするディレクトリ。指定しない場合、通常は`/etc/systemd/system`です。
 
 - `INSTALL_K3S_EXEC`
 
-    K3sをサービスで起動するかどうかを指定するフラグ付きのコマンドです。コマンドで指定していない場合、`K3S_URL` が設定
-    されていればデフォルトで"エージェント"として起動し、設定されていなければ "サーバー"で動くようにセットされます。
+    K3sをサービスで起動する時に指定する起動コマンドとフラグです。コマンドが指定されていない場合、`K3S_URL`が設定されていれば"agent"として起動し、設定されていなければ"server"で動くようにデフォルトでセットされます。
     
-    最終的にsystemdコマンドは、この環境変数とスクリプト引数の組み合わせを統合します。どういう事かといいますと、
-    以下のコマンドは最終的に全て同じ動作になります:
+    最終的にsystemdでのコマンドは、この環境変数とスクリプト引数の組み合わせが一緒になります。つまり、以下のコマンドは全てflannelを取り除いてサーバーに登録するという同じ動作になります:
      ```sh
      curl ... | INSTALL_K3S_EXEC="--no-flannel" sh -s -
      curl ... | INSTALL_K3S_EXEC="server --no-flannel" sh -s -
@@ -69,34 +66,32 @@ curl -sfL https://get.k3s.io | sh -
 
    - `INSTALL_K3S_NAME`
 
-    作成するsystemdサービス名を指定します。指定しない場合は、K3s execコマンドからデフォルト設定されます。指定すると、
-    その名前の先頭に'k3s-'が付きます。
+    systemdに登録される時のサービス名を指定します。指定しない場合は、K3s execコマンドがデフォルトで設定されます。指定すると、その名前の先頭に'k3s-'が付きます。
 
    - `INSTALL_K3S_TYPE`
 
-    作成するsystemdサービスのタイプ。指定しない場合は、K3s execコマンドからデフォルト設定されます。
+    systemdに登録されるサービスのタイプ。指定しない場合は、K3s 実行コマンドがデフォルトで設定されます。
 
 
-`K3S_` で始まる環境変数は、systemdおよびopenrcサービスで使用する用に保持されます。execコマンドに明示的に設定せずに `K3S_URL` が設定されているとコマンドはデフォルトで"エージェント"として設定されます。エージェントとして実行するときには、`K3S_TOKEN` も設定する必要があります。
+`K3S_`で始まる環境変数は、systemdおよびopenrcサービスにより設定されます。`K3S_URL`をexecコマンドで明示的に設定していないとデフォルトで"agent"として設定されます。エージェントとして実行するときには、`K3S_TOKEN`も設定する必要があります。
 
 
-### K3sのバイナリーでインストールする方法
+### K3sをバイナリーでインストールする方法
 
-前述のように、インストールスクリプトは主にK3をサービスとして実行するように設定することに関連しています。このスクリプトを使用しない場合は、[リリースページ](https://github.com/rancher/k3s/releases/latest)からバイナリをダウンロードし、パスに配置して実行するだけでK3sを実行できます。K3sバイナリは、次のコマンドをサポートしています:
+前述のように、インストールスクリプトは基本的にK3sをサービスとして起動するように設定します。このスクリプトを使用しない場合は、[リリースページ](https://github.com/rancher/k3s/releases/latest)からバイナリのみダウンロードし、パスに配置して実行するだけでK3sを起動できます。K3sバイナリは、次のコマンドをサポートしています:
 
 コマンド | 詳細
 --------|------------------
-<span class='nowrap'>`k3s server`</span> | K3s管理サーバーを起動します。このサーバーは、APIサーバー、コントローラマネージャー、スケジューラなどのKubernetesコントロールプレーンコンポーネントも起動します。
-<span class='nowrap'>`k3s agent`</span> |  K3sノードエージェントを起動します。これにより、K3はワーカーノードとして動作し、`kubelet`と`kube-proxy`のKubernetesノードサービスを起動します。
-<span class='nowrap'>`k3s kubectl`</span> | 組み込みの[kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) CLIを実行します。K3sサーバーノードとして起動するときに`KUBECONFIG` 環境変数が設定されていない場合は、`/etc/rancher/k3s/k3s.yaml`に作成された設定ファイルが自動的に使用されます。
-<span class='nowrap'>`k3s crictl`</span> | 埋め込みの[crictl](https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md)を実行します。これはKubernetesのコンテナランタイムインターフェース(CRI)とやりとりするためのCLIです。デバッグに役立ちます。
-<span class='nowrap'>`k3s ctr`</span> | 埋め込み[ctr](https://github.com/projectatomic/containerd/blob/master/docs/cli.md)を実行します。これは、K3sが使用するコンテナデーモンcontainerdのCLIです。デバッグに役立ちます。
+<span class='nowrap'>`k3s server`</span> | K3s管理サーバーを起動します。このサーバーは、APIサーバー、コントローラマネージャー、スケジューラなどのKubernetesコントロールプレーンコンポーネントが起動されます。
+<span class='nowrap'>`k3s agent`</span> |  K3sノードエージェントを起動します。これにより、K3sはワーカーノードとして動作し、`kubelet`と`kube-proxy`のKubernetesノードのサービスが起動されます。
+<span class='nowrap'>`k3s kubectl`</span> | 組み込みの[kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) CLIを実行します。K3sサーバーノードとして起動するときに`KUBECONFIG` 環境変数が設定されていない場合は、`/etc/rancher/k3s/k3s.yaml`に作成された設定ファイルが自動的に参照されます。
+<span class='nowrap'>`k3s crictl`</span> | 組み込みの[crictl](https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md)を実行します。これはKubernetesのコンテナランタイムインターフェース(CRI)とやりとりするためのCLIです。デバッグに便利です。
+<span class='nowrap'>`k3s ctr`</span> | 組み込みの[ctr](https://github.com/projectatomic/containerd/blob/master/docs/cli.md)を実行します。これは、K3sが使用するコンテナデーモンcontainerdのCLIです。デバッグに便利です。
 <span class='nowrap'>`k3s help`</span> | コマンドの一覧または1つのコマンドのヘルプを表示します
 
-`k3s server` および `k3s agent` コマンドには追加の設定オプションがあり、<span class='nowrap'>`k3s server --help`</span>または<span class='nowrap'>`k3s agent --help`</span>で表示できます。
-The `k3s server` and `k3s agent` commands have additional configuration options that can be viewed with <span class='nowrap'>`k3s server --help`</span> or <span class='nowrap'>`k3s agent --help`</span>. 便宜上、このヘルプテキストを以下に示します:
+`k3s server`および`k3s agent`コマンドのその他の設定オプションは、<span class='nowrap'>`k3s server --help`</span>または<span class='nowrap'>`k3s agent --help`</span>で見られます。ヘルプテキストを以下に掲載します:
 
-# K3sサーバーを動かす時のオプション
+# K3sサーバー起動オプション
 
 ```
 NAME:
@@ -163,7 +158,7 @@ OPTIONS:
    --cluster-secret value                     (deprecated) use --token [$K3S_CLUSTER_SECRET]
 ```
 
-# K3sエージェントを動かす時のオプション
+# K3sエージェント起動オプション
 
 ```
 NAME:
@@ -214,4 +209,4 @@ K3sエージェントは、kubeletにラベルとtaintを追加するオプシ�
      --node-taint key1=value1:NoExecute
 ```
 
-ノードの登録後にノードのラベルや属性を変更したい場合は`kubectl`を使用してください。[taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)を追加する方法や[ノードラベル](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/#add-a-label-to-a-node)のKubernetesの公式ドキュメントを参照してください。
+ノードの登録後にノードのラベルやtaintを変更したい場合は`kubectl`を使う必要があります。[taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)を追加する方法や[ノードラベル](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/#add-a-label-to-a-node)の変更はKubernetesの公式ドキュメントを参照してください。
