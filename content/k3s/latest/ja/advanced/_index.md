@@ -6,17 +6,17 @@ aliases:
   - /k3s/latest/en/configuration/
 ---
 
-このセクションでは、K3を実行および管理するさまざまな方法について詳しく説明します。
+このセクションでは、K3sを実行および管理するさまざまな方法について詳しく説明します。
 
 - [マニフェストの自動配布](#マニフェストの自動配布)
-- [Helm CRDを利用する](#Helm CRDを利用する)
+- [Helm CRDを利用する](#Helm-CRDを利用する)
 - [kubectlを使って外部からクラスタへアクセスする](#kubectlを使って外部からクラスタへアクセスする)
 - [コンテナランタイムにDockerを使用する](#コンテナランタイムにDockerを使用する)
 - [RootlessKitでK3sを動かす(試験的実装)](#RootlessKitでK3sを動かす(試験的実装))
 - [ノードのラベルとtaint](#ノードのラベルとtaint)
 - [インストールスクリプトでのサーバーの起動](#インストールスクリプトでのサーバーの起動)
-- [Additional preparation for Alpine Linux setup](#additional-preparation-for-alpine-linux-setup)
-- [Running K3d (K3s in Docker) and docker-compose](#running-k3d-k3s-in-docker-and-docker-compose)
+- [Alpine Linuxで設定するときの追加セットアップ](#Alpine-Linuxで設定するときの追加セットアップ)
+- [K3d(Dockerで動くK3s)をdocker-composeで動かす](#K3d(Dockerで動くK3s)をdocker-composeで動かす)
 
 # マニフェストの自動配布
 
@@ -119,7 +119,7 @@ RootlessKitはLinuxネイティブの "root偽装" ユーティリティの一�
 私たちはrootlessに興味を持つ人たちのために初期サポートをリリースしました。いつか何人かの人がユーザビリティを改善してくれることを期待しています。まず、ユーザーの名前空間が適切に設定され、サポートされていることを確認します。手順については、RootlessKitの[要件セクション](https://github.com/rootless-containers/rootlesskit#setup)を参照してください。
 簡単に言うと、Rootlessを動かすのに一番よい方法は最新のUbuntuを使うことです。
 
-### Rootlessの課題
+### RootlessKitの課題
 
 * **ポート**
 
@@ -228,7 +228,7 @@ reboot
 - **k3s** を **/usr/local/bin/k3s** へダウンロード
 - **/etc/init.d** にopenrcファイルを作成
 
-# K3d(Dockerで動くK3s)を動かして、docker-compose
+# K3d(Dockerで動くK3s)をdocker-composeで動かす
 
 [k3d](https://github.com/rancher/k3d)はDockerでK3sを簡単に実行できるように設計されたユーティリティです。
 

@@ -3,9 +3,13 @@ title: "ボリュームとストレージ"
 weight: 30
 ---
 
-データを保持する必要があるアプリケーションを導入する場合は、永続ストレージを作成する必要があります。永続ストレージを使用すると、アプリケーションを実行するポッドの外部にアプリケーションデータを格納できます。このストレージの利用により、アプリケーションのポッドに障害が発生した場合でも、アプリケーション・データを維持します。
+データを保持する必要があるアプリケーションを導入する場合は、永続ストレージを作成する必要があります。永続ストレージを使用すると、アプリケーションを実行するポッドの外部にアプリケーションのデータを格納できます。ストレージを使うことにより、アプリケーションのポッドに障害が発生した場合でも、アプリケーションのデータが維持されます。
 
-# ローカルストレージプロバイダ
+パーシステントボリューム(PV)は、Kubernetesクラスターで使えるストレージの一つで、パーシステントボリュームクレームのリクエストによりストレージから切り出されるものです。PVとPVCがどのような挙動をするかについて詳しくは、公式のKubernetesの[ストレージ](https://kubernetes.io/docs/concepts/storage/volumes/)ドキュメントを参照してください。
+
+こちらのページでは、ローカルストレージプロバイダーか、[Longhorn.](#setting-up-longhorn)を使ってパーシステントストレージをセットアップする方法を解説します。
+
+# ローカルストレージプロバイダー
 K3sにはRancherのLocal Path Provisionerが付属していて、最初から各ノードのローカルストレージを使用して永続ボリュームクレームを作成することができるようになっています。以下に簡単な例を示します。詳細については、公式ドキュメントの [ここ](https://github.com/rancher/local-path-provisioner/blob/master/README.md#usage) を参照してください。
 
 hostPathによってバックアップされた永続ボリュームクレームとそれを使用するポッドを作成する:
@@ -51,17 +55,31 @@ spec:
       claimName: local-path-pvc
 ```
 
-`kubectl create -f pvc.yaml` と `kubectl create -f pod.yaml` で yamlファイルを適用する
+yamlファイルを適用する:
 
-PV と PVC が作られたのを確認します。`kubectl get pv` と `kubectl get pvc` のコマンドでそれぞれ bound になっている必要があります。
+```
+kubectl create -f pvc.yaml
+kubectl create -f pod.yaml
+```
 
-# Longhorn
+PV と PVC が作られたのを確認します:
+
+```
+kubectl get pv
+kubectl get pvc
+```
+
+それぞれ bound になっているはずです。
+
+# Longhornをセットアップする
 
 [comment]: <> (pending change - longhorn may support arm64 and armhf in the future.)
 
 > **注:** 現時点では、Longhornはamd64のみをサポートしています。
 
-K3sは[ロングホーン] (https://github.com/longhorn/longhorn)をサポートします。以下に簡単な例を示します。詳細については、公式ドキュメント[ここ](https://github.com/longhorn/longhorn/blob/master/README.md) を参照してください。
+K3sは[ロングホーン] (https://github.com/longhorn/longhorn)をサポートします。Longhornは、Kubernetes向けのオープンソース分散ブロックストレージです。
+
+以下に簡単な例を示します。詳細については、公式ドキュメント[ここ](https://github.com/longhorn/longhorn/blob/master/README.md) を参照してください。
 
 longhorn.yamlを適用してLonghornをインストールします。
 
@@ -77,7 +95,12 @@ PVCを作成する前に、このyamlを使用してLonghorn用のストレー�
 kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/master/examples/storageclass.yaml
 ```
 
-ここで、次のyamlを適用してPVCとポッドを `kubectl create-f pvc.yaml` と `kubectl create-f pod.yaml` で作成します。
+yamlを適用してPVCとポッドを作成します。
+
+```
+kubectl create -f pvc.yaml
+kubectl create -f pod.yaml
+```
 
 ### pvc.yaml
 
@@ -119,4 +142,11 @@ spec:
       claimName: longhorn-volv-pvc
 ```
 
-PVとPVCが作成されていることを確認します。`kubectlget pv` と `kubectlget pvc` のステータスはそれぞれBoundになっている必要があります。
+PVとPVCが作成されていることを確認:
+
+```
+kubectl get pv
+kubectl get pvc
+```
+
+それぞれステータスがBoundになっているはずです。
