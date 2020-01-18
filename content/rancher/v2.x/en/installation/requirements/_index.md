@@ -22,6 +22,8 @@ Make sure the node(s) for the Rancher server fulfill the following requirements:
 
 For a list of best practices that we recommend for running the Rancher server in production, refer to the [best practices section.]({{<baseurl>}}/rancher/v2.x/en/best-practices/deployment-types/)
 
+The Rancher UI works best in Firefox or Chrome.
+
 # Operating Systems and Docker Requirements
 
 Rancher should work with any modern Linux distribution and any modern Docker version.
@@ -126,7 +128,7 @@ The following tables break down the port requirements for inbound and outbound t
 
 <figcaption>Outbound Rules for Rancher Nodes</figcaption>
 
-| Protocol | Port | Source                                                   | Description                                   |
+| Protocol | Port | Destination                                              | Description                                   |
 | -------- | ---- | -------------------------------------------------------- | --------------------------------------------- |
 | TCP      | 22   | Any node IP from a node created using Node Driver        | SSH provisioning of nodes using Node Driver   |
 | TCP      | 443  | `35.160.43.145/32`, `35.167.242.46/32`, `52.33.59.17/32` | git.rancher.io (catalogs)                     |
