@@ -20,10 +20,10 @@ aliases:
 
 # マニフェストの自動配布
 
-`/var/lib/rancher/k3s/server/manifests`に置かれたファイルは、全て`kubectl apply`を適用する習慣のように
+`/var/lib/rancher/k3s/server/manifests`に置かれた全てのファイルは、`kubectl apply`をいつも適用するように
 自動的にKubernetesに展開されます。
 
-Helmチャートをデプロイすることもできます。K3sは、チャートをインストールするためのCRDコントローラをサポートします。YAMLファイル仕様は次のようになります(以下の例は `/var/lib/rancher/k3s/server/manifests/traefik.yaml` から取りました):
+Helmチャートをデプロイすることもできます。K3sでは、チャートをインストールするためのCRDコントローラが動いています。デプロイされるYAMLファイルは次のような仕様になります(以下は `/var/lib/rancher/k3s/server/manifests/traefik.yaml` から取った例です):
 
 ```yaml
 apiVersion: helm.cattle.io/v1
@@ -38,7 +38,7 @@ spec:
     ssl.enabled: "true"
 ```
 
-注意していただきたいことは、HelmChartのリソースメタデータセクションの`namespace`は常に`kube-system`にする必要があることです。というのもK3sデプロイコントローラーは新しくデプロイされたHelmChartのリソースでこの名前空間名を常に監視するように設定されているためです。実際のヘルムリリースでネームスペースを指定するには、以下の設定サンプルのように`spec`セクションディレクティブで、`targetNamespace`キーを使用します。
+注意していただきたいのは、HelmChartのリソースのメタデータセクションの`namespace`は常に`kube-system`にする必要がある点です。というのもK3sデプロイコントローラーは新しくデプロイされたHelmChartのリソースでこの名前空間名を常に監視するように設定されているためです。実際のヘルムリリースでネームスペースを指定するには、以下の設定サンプルのように`spec`セクションディレクティブで、`targetNamespace`キーを使用します。
 
 もう一つの注意点としては、`set`の他に、`spec`ディレクティブの配下で`values Content`を使用することもできます。また、両方を使っても問題ありません:
 
@@ -102,24 +102,24 @@ spec:
 
 # コンテナランタイムにDockerを使用する
 
-K3sには業界標準の[containerd,](https://containerd.io/)が含まれ、デフォルトに設定されています。containerdの代わりにDockerを使用したい場合は、単に`--docker`フラグを付けてエージェントを実行するだけです。
+K3sには業界標準の[containerd,](https://containerd.io/)が含まれ、デフォルトになっています。containerdの代わりにDockerを使用したい場合は、単に`--docker`フラグを付けてエージェントを実行してください。
 
-K3sは`/var/lib/rancher/k3s/agent/etc/containerd/config.toml`にcontainerdのためのconfig.toml設定を生成します。このファイルを高度にカスタマイズするには、同じディレクトリに`config.toml.tmpl`という別のファイルを作成すると代わりこちらが使用されます。
+K3sはcontainerdのためのconfig.toml設定を生成し、`/var/lib/rancher/k3s/agent/etc/containerd/config.toml`に保存します。このファイルを詳細にカスタマイズするには、同じディレクトリに`config.toml.tmpl`という別のファイルを作成すると代わりこちらが使用されます。
 
 `config.toml.tmpl`はGolangテンプレートファイルとなっていて、`config.Node`の構成がテンプレートになっています。以下は設定ファイルの構成をカスタマイズする方法の例です。 https://github.com/rancher/k3s/blob/master/pkg/agent/templates/templates.go#L16-L32
 
 # RootlessKitでK3sを動かす(試験的実装)
 
-_**警告**:_ 試験的機能
+> **警告:** この機能は、試験的実装です
 
 RootlessKitはLinuxネイティブの "root偽装" ユーティリティの一種で、主に[特権を持たないユーザとしてDockerとKubernetesを実行](https://github.com/rootless-containers/usernetes)ために作られていて、潜在的なコンテナ侵入攻撃からホスト上の実際のrootを保護します。
 
-初期のrootlessサポートが追加されましたが、その副作用によりユーザビリティーにいくつかの重要な課題があります。
+rootlessの初期サポートを追加していますが、その副作用によりユーザビリティーにいくつかの重要な課題があります。
 
-私たちはrootlessに興味を持つ人たちのために初期サポートをリリースしました。いつか何人かの人がユーザビリティを改善してくれることを期待しています。まず、ユーザーの名前空間が適切に設定され、サポートされていることを確認します。手順については、RootlessKitの[要件セクション](https://github.com/rootless-containers/rootlesskit#setup)を参照してください。
-簡単に言うと、Rootlessを動かすのに一番よい方法は最新のUbuntuを使うことです。
+rootlessに興味を持つ人たちのための初期サポートを実装しています。いつか誰かによりユーザビリティが改善されることを期待しています。利用するには、ユーザーの名前空間が適切に設定され、サポートされていることを確認します。手順については、RootlessKitの[要件セクション](https://github.com/rootless-containers/rootlesskit#setup)を参照してください。
+一言で言うとRootlessを動かすには最新のUbuntuを使うことが一番です。
 
-### RootlessKitの課題
+### RootlessKitの既知の課題
 
 * **ポート**
 
