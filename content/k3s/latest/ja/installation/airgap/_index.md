@@ -23,8 +23,7 @@ sudo cp ./k3s-airgap-images-$ARCH.tar /var/lib/rancher/k3s/agent/images/
 
 ### レジストリYAMLの作成
 registries.yamlファイルを`/etc/rancher/k3s/registries.yaml`に作成します。ここにk3sがプライベートレジストリに接続するための必要な詳細情報を設定します。
-接続する前に必要な情報のregistries.yamlファイルは次のようになります。
-The registries.yaml file should look like this before plugging in the necessary information:
+接続する前に必要な情報のregistries.yamlファイルは次のようになります:
 
 ```
 ---
