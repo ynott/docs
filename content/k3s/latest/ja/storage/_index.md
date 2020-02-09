@@ -5,14 +5,14 @@ weight: 30
 
 データを保持する必要があるアプリケーションを導入する場合は、永続ストレージを作成する必要があります。永続ストレージを使用すると、アプリケーションを実行するポッドの外部にアプリケーションのデータを格納できます。ストレージを使うことにより、アプリケーションのポッドに障害が発生した場合でも、アプリケーションのデータが維持されます。
 
-パーシステントボリューム(PV)は、Kubernetesクラスターで使えるストレージの一つで、パーシステントボリュームクレームのリクエストによりストレージから切り出されるものです。PVとPVCがどのような挙動をするかについて詳しくは、公式のKubernetesの[ストレージ](https://kubernetes.io/docs/concepts/storage/volumes/)ドキュメントを参照してください。
+パーシステントボリューム(PV)は、Kubernetesクラスターで使えるストレージの一つで、パーシステントボリュームクレームのリクエストによりストレージから切り出されるものです。PVとPVCがどのような挙動をするかについて詳しくは、公式のKubernetesの[ストレージ](https://kubernetes.io/docs/concepts/storage/volumes/)のドキュメントを参照してください。
 
-こちらのページでは、ローカルストレージプロバイダーか、[Longhorn.](#setting-up-longhorn)を使ってパーシステントストレージをセットアップする方法を解説します。
+こちらのページでは、ローカルストレージプロバイダーか、[Longhorn](#setting-up-longhorn)を使ってパーシステントストレージをセットアップする方法を解説します。
 
 # ローカルストレージプロバイダー
 K3sにはRancherのLocal Path Provisionerが付属していて、最初から各ノードのローカルストレージを使用して永続ボリュームクレームを作成することができるようになっています。以下に簡単な例を示します。詳細については、公式ドキュメントの [ここ](https://github.com/rancher/local-path-provisioner/blob/master/README.md#usage) を参照してください。
 
-hostPathによってバックアップされた永続ボリュームクレームとそれを使用するポッドを作成する:
+hostPathによってバックアップされた永続ボリュームクレームとそれを使用するPodを作成する:
 
 ### pvc.yaml
 
@@ -69,7 +69,7 @@ kubectl get pv
 kubectl get pvc
 ```
 
-それぞれ bound になっているはずです。
+それぞれステータスが、Boundになっているはずです。
 
 # Longhornをセットアップする
 
@@ -77,9 +77,9 @@ kubectl get pvc
 
 > **注:** 現時点では、Longhornはamd64のみをサポートしています。
 
-K3sは[ロングホーン] (https://github.com/longhorn/longhorn)をサポートします。Longhornは、Kubernetes向けのオープンソース分散ブロックストレージです。
+K3sは[Longhorn] (https://github.com/longhorn/longhorn)をサポートします。Longhornは、Kubernetes向けのオープンソース分散ブロックストレージです。
 
-以下に簡単な例を示します。詳細については、公式ドキュメント[ここ](https://github.com/longhorn/longhorn/blob/master/README.md) を参照してください。
+以下に簡単な例を示します。詳細については、[公式ドキュメント](https://github.com/longhorn/longhorn/blob/master/README.md) を参照してください。
 
 longhorn.yamlを適用してLonghornをインストールします。
 
@@ -95,7 +95,7 @@ PVCを作成する前に、このyamlを使用してLonghorn用のストレー�
 kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/master/examples/storageclass.yaml
 ```
 
-yamlを適用してPVCとポッドを作成します。
+yamlを適用してPVCとPodを作成します。
 
 ```
 kubectl create -f pvc.yaml

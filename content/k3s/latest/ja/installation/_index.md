@@ -3,9 +3,9 @@ title: "インストール"
 weight: 20
 ---
 
-この節では、さまざまな環境にK3をインストールする手順について説明します。K3のインストールを開始する前に、[ノード要件]({{< baseurl >}}/k3s/latest/en/installation/node-requirements/)を満たしていることを確認してください。
+この節では、さまざまな環境にK3sをインストールする手順について説明します。K3sのインストールを開始する前に、[ノード要件]({{< baseurl >}}/k3s/latest/en/installation/node-requirements/)を満たしていることを確認してください。
 
-[インストールオプション]({{< baseurl >}}/k3s/latest/en/installation/install-options/)では、K3のインストール時に使用できるオプションについて説明します。
+[インストールオプション]({{< baseurl >}}/k3s/latest/en/installation/install-options/)では、K3sのインストール時に使用できるオプションについて説明します。
 
 
 [外部DBによる高可用性構成]({{< baseurl >}}/k3s/latest/en/installation/ha/)では、MySQL、PostgreSQL、etcdなどの外部データストアを利用したHA K3sクラスタのセットアップ方法について説明します。

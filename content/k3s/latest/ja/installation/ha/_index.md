@@ -32,7 +32,7 @@ HAクラスタをセットアップするには、次の手順を実行する必
 ### 2. サーバー・ノードの起動
 このHA構成では、K3sには2つ以上のサーバノードが必要です。ノードの最小要件については、[ノード要件]({{< baseurl >}}/k3s/latest/ja/installation/node-requirements/)ガイドを参照してください。
 
-これらのノードで`k3s server`コマンドを実行する場合は、K3が外部データストアへの接続方法を認識できるように `datastore-endpoint` パラメータを設定する必要があります。このパラメータの構成については、[データストア構成ガイド]({{< baseurl >}}/k3s/latest/en/installation/datastore/#external-datastore-configuration-parameters)を参照してください。
+これらのノードで`k3s server`コマンドを実行する場合は、K3sが外部データストアへの接続方法を認識できるように `datastore-endpoint` パラメータを設定する必要があります。このパラメータの構成については、[データストア構成ガイド]({{< baseurl >}}/k3s/latest/en/installation/datastore/#external-datastore-configuration-parameters)を参照してください。
 
 > **注意:** HA構成のインストールでも、シングルサーバーのインストールと同じインストールオプションが使えます。インストールオプションの詳細については、[インストールおよび構成オプション]({{< baseurl >}}/k3s/latest/en/installation/install-options/)を参照してください。
 
