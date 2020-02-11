@@ -3,14 +3,14 @@ title: "ボリュームとストレージ"
 weight: 30
 ---
 
-データを保持する必要があるアプリケーションを導入する場合は、永続ストレージを作成する必要があります。永続ストレージを使用すると、アプリケーションを実行するポッドの外部にアプリケーションのデータを格納できます。ストレージを使うことにより、アプリケーションのポッドに障害が発生した場合でも、アプリケーションのデータが維持されます。
+データを保持するアプリケーションを導入する場合は、永続ストレージを作成する必要があります。永続ストレージを使用すると、アプリケーションを実行するPodの外部にアプリケーションのデータを格納できます。永続ストレージを使用してアプリケーションのPodに障害が発生した場合でも、アプリケーションのデータが維持されます。
 
-パーシステントボリューム(PV)は、Kubernetesクラスターで使えるストレージの一つで、パーシステントボリュームクレームのリクエストによりストレージから切り出されるものです。PVとPVCがどのような挙動をするかについて詳しくは、公式のKubernetesの[ストレージ](https://kubernetes.io/docs/concepts/storage/volumes/)のドキュメントを参照してください。
+パーシステントボリューム(PV)は、Kubernetesクラスターで使用するストレージの一つで、パーシステントボリュームクレームのリクエストによりストレージから切り出されるものです。PVとPVCがどのような挙動をするかについて詳しくは、公式のKubernetesの[ストレージ](https://kubernetes.io/docs/concepts/storage/volumes/)のドキュメントを参照してください。
 
 こちらのページでは、ローカルストレージプロバイダーか、[Longhorn](#setting-up-longhorn)を使ってパーシステントストレージをセットアップする方法を解説します。
 
 # ローカルストレージプロバイダー
-K3sにはRancherのLocal Path Provisionerが付属していて、最初から各ノードのローカルストレージを使用して永続ボリュームクレームを作成することができるようになっています。以下に簡単な例を示します。詳細については、公式ドキュメントの [ここ](https://github.com/rancher/local-path-provisioner/blob/master/README.md#usage) を参照してください。
+K3sにはRancherのLocal Path Provisionerが付属していて、最初から各ノードのローカルストレージを使用して永続ボリュームクレームを作成することができるようになっています。以下に簡単な例を示します。詳細については、[公式ドキュメント](https://github.com/rancher/local-path-provisioner/blob/master/README.md#usage)を参照してください。
 
 hostPathによってバックアップされた永続ボリュームクレームとそれを使用するPodを作成する:
 
@@ -69,17 +69,15 @@ kubectl get pv
 kubectl get pvc
 ```
 
-それぞれステータスが、Boundになっているはずです。
+それぞれステータスが、Boundになっているか確認してください。
 
 # Longhornをセットアップする
 
-[comment]: <> (pending change - longhorn may support arm64 and armhf in the future.)
-
 > **注:** 現時点では、Longhornはamd64のみをサポートしています。
 
-K3sは[Longhorn] (https://github.com/longhorn/longhorn)をサポートします。Longhornは、Kubernetes向けのオープンソース分散ブロックストレージです。
+K3sは[Longhorn](https://github.com/longhorn/longhorn)をサポートします。Longhornは、Kubernetes向けのオープンソース分散ブロックストレージです。
 
-以下に簡単な例を示します。詳細については、[公式ドキュメント](https://github.com/longhorn/longhorn/blob/master/README.md) を参照してください。
+以下に簡単な例を示します。詳細については、[公式ドキュメント](https://github.com/longhorn/longhorn/blob/master/README.md)を参照してください。
 
 longhorn.yamlを適用してLonghornをインストールします。
 
@@ -149,4 +147,4 @@ kubectl get pv
 kubectl get pvc
 ```
 
-それぞれステータスがBoundになっているはずです。
+それぞれステータスが、Boundになっているか確認してください。

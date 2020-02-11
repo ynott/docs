@@ -20,7 +20,7 @@ aliases:
 
 # マニフェストの自動配布
 
-`/var/lib/rancher/k3s/server/manifests`に置かれた全てのファイルは、`kubectl apply`をいつも適用するように
+`/var/lib/rancher/k3s/server/manifests`に置かれた全てのファイルは、`kubectl apply`が常に適用されて
 自動的にKubernetesに展開されます。
 
 Helmチャートをデプロイすることもできます。K3sでは、チャートをインストールするためのCRDコントローラが動いています。デプロイされるYAMLファイルは次のような仕様になります(以下は `/var/lib/rancher/k3s/server/manifests/traefik.yaml` から取った例です):
@@ -82,7 +82,7 @@ spec:
   targetNamespace: default
 ```
 
-以下のサンプルのようにすると特定のバージョンのヘルムチャートをインストールできます:
+以下のサンプルのようにすると特定のバージョンのHelmチャートをインストールできます:
 
 ```yaml
 apiVersion: helm.cattle.io/v1
@@ -102,30 +102,30 @@ spec:
 
 # コンテナランタイムにDockerを使用する
 
-K3sには業界標準の[containerd,](https://containerd.io/)が含まれ、デフォルトになっています。containerdの代わりにDockerを使用したい場合は、単に`--docker`フラグを付けてエージェントを実行してください。
+K3sには業界標準の[containerd](https://containerd.io/)が含まれ、デフォルトに設定されています。containerdの代わりにDockerを使用したい場合は、`--docker`フラグを付けてエージェントを実行してください。
 
-K3sはcontainerdのためのconfig.toml設定を生成し、`/var/lib/rancher/k3s/agent/etc/containerd/config.toml`に保存します。このファイルを詳細にカスタマイズするには、同じディレクトリに`config.toml.tmpl`という別のファイルを作成すると代わりこちらが使用されます。
+K3sはcontainerdのconfig.toml設定を生成し、`/var/lib/rancher/k3s/agent/etc/containerd/config.toml`に保存します。このファイルを詳細にカスタマイズするには、同じディレクトリに`config.toml.tmpl`という別のファイルを作成すると代わりにこちらが使用されます。
 
 `config.toml.tmpl`はGolangテンプレートファイルとなっていて、`config.Node`の構成がテンプレートになっています。以下は設定ファイルの構成をカスタマイズする方法の例です。 https://github.com/rancher/k3s/blob/master/pkg/agent/templates/templates.go#L16-L32
 
-# RootlessKitでK3sを動かす(試験的実装)
+# RootlessKitでK3sを動かす(試験実装)
 
-> **警告:** この機能は、試験的実装です
+> **警告:** この機能は、試験実装です
 
-RootlessKitはLinuxネイティブの "root偽装" ユーティリティの一種で、主に[特権を持たないユーザとしてDockerとKubernetesを実行](https://github.com/rootless-containers/usernetes)ために作られていて、潜在的なコンテナ侵入攻撃からホスト上の実際のrootを保護します。
+RootlessKitはLinuxネイティブの "root偽装" ユーティリティの一種で、主に[特権を持たないユーザでDockerとKubernetesを実行する](https://github.com/rootless-containers/usernetes)ために作られ、潜在的なコンテナ侵入攻撃からホスト上の実際のrootを保護します。
 
-rootlessの初期サポートを追加していますが、その副作用によりユーザビリティーにいくつかの重要な課題があります。
+rootlessの初期サポートが実装されていますが、その影響によりユーザビリティーにいくつかの重要な課題があります。
 
-rootlessに興味を持つ人たちのための初期サポートを実装しています。いつか誰かによりユーザビリティが改善されることを期待しています。利用するには、ユーザーの名前空間が適切に設定され、サポートされていることを確認します。手順については、RootlessKitの[要件セクション](https://github.com/rootless-containers/rootlesskit#setup)を参照してください。
-一言で言うとRootlessを動かすには最新のUbuntuを使うことが一番です。
+rootlessに取り組みたい人たちのための初期サポートを実装しています。いつかコントリビューターがユーザビリティを改善することを期待しています。利用するには、ユーザーの名前空間が適切に設定され、サポートされていることを確認します。手順については、RootlessKitの[要件セクション](https://github.com/rootless-containers/rootlesskit#setup)を参照してください。
+要するにRootlessを動かす一番簡単な方法は最新のUbuntuを使うことです。
 
 ### RootlessKitの既知の課題
 
 * **ポート**
 
-    rootlessを実行すると、新しいネットワーク名前空間が作成されます。これは、K3sインスタンスがホストからまったく切り離されたネットワークで実行されていることを意味します。そうするとホストからK3sのサービスに接続する唯一の方法は、K3s ネットワークネームスペースにポートフォワードするしかありません。ホストに6443を自動的にバインドし、1024未満のポートを10000オフセットしてホストにバインドするコントローラがあります。
+    rootlessを実行すると、新しいネットワーク名前空間が作成されます。これは、K3sインスタンスがホストからまったく切り離されたネットワークで実行されていることを意味します。そうするとホストからK3sのサービスに接続する唯一の方法は、K3s ネットワークネームスペースにポートフォワードするしかありません。その為、ホストに6443を自動的にバインドし、1024未満のポートに10000を足してホストにバインドするコントローラがあります。
 
-    つまり、ホストのサービスポート80は10080になりますが、8080はオフセットなしで8080になります。
+    つまり、ホストのサービスポート80は10080になりますが、8080は足されることなしに8080になります。
  
     現在、自動的にバインドされるのは `LoadBalancer`サービスのみです。
 
@@ -142,16 +142,14 @@ rootlessに興味を持つ人たちのための初期サポートを実装して
 
 ### Rootlessでサーバーとエージェントを起動する
 
-サーバかエージェントのどちらかに`--rootless`フラグを追加するだけです。`k3s server --rootless`を実行し、クラスターにアクセス
-するためのkubeconfigがどこにあるかを調べるために `Wrote kubeconfig [パス]`というメッセージを探します。
+サーバかエージェントのどちらかに`--rootless`フラグを追加するだけです。その為、`k3s server --rootless`を実行して、クラスターにアクセス
+するためのkubeconfigがどこにあるかを調べるために `Wrote kubeconfig [SOME PATH]`というメッセージを見つけてください。
 
-注意して欲しいのですが、`-o` を使って
-kubeconfigを別のディレクトリに書き込んでいる場合、うまくいかない可能性があります。これは、内のK3sインスタンスが別のマウント名前空間で
-実行されているためです。
+注意して欲しい点は、`-o` を使ってkubeconfigを別のディレクトリに書き込んでいる場合、おそらく動作しないことに注意してください。これは、K3sインスタンスが異なるマウント名前空間で実行されているためです。
 
 # ノードのラベルとtaint
 
-K3sエージェントは、kubeletにラベルとtaintを追加するオプション`--node-label`と`--node-taint`で設定できます。この2つのオプションは、[登録時]({{<baseurl>}}/k3s/latest/en/installation/install-options/#node-labels-and-taints-for-agents)にラベルまたはtaint(あるいはその両方) を追加するだけなので、K3sをラベルを追加して一度実行して後は変更できません。
+K3sエージェントは、kubeletにラベルとtaintを追加するオプション`--node-label`と`--node-taint`で設定できます。この2つのオプションは、[登録時]({{<baseurl>}}/k3s/latest/en/installation/install-options/#node-labels-and-taints-for-agents)にラベルまたはtaint(あるいはその両方) を追加するだけなので、K3sをラベルを追加して一度実行した後は変更できません。
 
 ノードの登録後にノードのラベルや属性を変更したい場合は`kubectl`を使用してください。ラベルと[taint](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)と[ノードラベル](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/#add-a-label-to-a-node)を追加する方法は、それぞれ公式ドキュメントを参照してください。
 
@@ -160,7 +158,7 @@ K3sエージェントは、kubeletにラベルとtaintを追加するオプシ�
 インストールスクリプトは、OSがsystemdまたはopenrcを使用しているかどうかを自動的に検出し、サービスを起動します。
 ログはopenrcの場合は `/var/log/k3s.log` に出力されます。
 
-systemdの場合は、`/var/log/syslog` に出力されます。`journalctl-u k3s`を使用して表示することもできます。
+systemdの場合は、`/var/log/syslog` に出力されます。`journalctl -u k3s`を使用して表示することもできます。
 
 インストールスクリプトを使用したインストールと自動起動の例:
 
@@ -230,7 +228,7 @@ reboot
 
 # K3d(Dockerで動くK3s)をdocker-composeで動かす
 
-[k3d](https://github.com/rancher/k3d)はDockerでK3sを簡単に実行できるように設計されたユーティリティです。
+[k3d](https://github.com/rancher/k3d)はDocker上でK3sを簡単に実行できるように設計されたユーティリティです。
 
 このユーティリティは、MacOSの場合は[brew](https://brew.sh/)ユーティリティを使用してインストールできます。
 

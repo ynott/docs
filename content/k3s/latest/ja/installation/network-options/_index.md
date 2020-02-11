@@ -3,15 +3,15 @@ title: "ネットワークオプション"
 weight: 25
 ---
 
-> **注意:** CoreDNS、Traefik、およびサービスLBについては、[ネットワーク]({{< baseurl >}}/k3s/latest/en/networking)ページを参照してください。
+> **注意:** CoreDNS、Traefik、およびサービスLBについては、[ネットワーク]({{< baseurl >}}/k3s/latest/en/networking)の章を参照してください。
 
-デフォルトでは、K3sはCNIとしてflannelを使用し、デフォルトのバックエンドとしてVXLANを使用します。CNIを変更するには、[カスタムCNI](#custom-cni)の設定に関するセクションを参照してください。flannelバックエンドを変更するには、flannelオプションのセクションを参照してください。
+デフォルトでは、K3sはCNIとしてflannelを使用し、デフォルトのバックエンドとしてVXLANを使用します。CNIを変更するには、[カスタムCNI](#custom-cni)の設定の章を参照してください。flannelバックエンドを変更するには、flannelオプションの章を参照してください。
 
 ### Flannel オプション
 
 flannelのデフォルトのバックエンドはVXLANです。暗号化を有効にするには、次のIPSec(インターネットプロトコルセキュリティ)を通すか、または以下のWireGuardオプションを使用します。
 
-FlannelのバックエンドとしてWireGuardを使う場合、追加のカーネルモジュールが必要になります。詳しくは[WireGuardインストールガイド](https://www.wireguard.com/install/)をご覧ください。WireGuardのインストール手順では、ご利用中のオペレーティング・システムに適切なカーネル・モジュールをインストールすることが重要です。WireGuard flannelバックエンドオプションを利用する前に、サーバとエージェントの両方のすべてのノードにWireGuardをインストールする必要があります。
+FlannelのバックエンドとしてWireGuardを使う場合、追加のカーネルモジュールが必要になります。詳しくは[WireGuardインストールガイド](https://www.wireguard.com/install/)をご覧ください。WireGuardのインストール手順で、ご利用中のオペレーティング・システムに対応したカーネル・モジュールがインストールされます。WireGuardとflannelのバックエンドオプションを利用する前に、サーバとエージェントの両方のすべてのノードにWireGuardをインストールする必要があります。
 
   CLIフラグと値 | 詳細
   -------------------|------------
@@ -21,12 +21,12 @@ FlannelのバックエンドとしてWireGuardを使う場合、追加のカー�
 
 ### カスタム CNI
 
-`--flannel-backend=none` を指定してK3sを実行し、ご希望のCNIをインストールします。CanalとCalicoではIP Forwardingを有効にする必要があります。以下の手順を参照してください。
+`--flannel-backend=none` を指定してK3sを実行し、希望のCNIをインストールします。CanalとCalicoではIP Forwardingを有効にする必要があります。以下の手順を参照してください。
 
 {{% tabs %}}
 {{% tab "Canal" %}}
 
-[プロジェクトCalicoドキュメント](https://docs.projectcalico.org/)にアクセスしてください。Canalをインストールするには以下の手順に従います。container_settingsセクションでIPフォワードができるようにCanal YAMLを変更します。次に例を示します:
+[プロジェクトCalicoドキュメント](https://docs.projectcalico.org/)を参照してください。Canalをインストールするには以下の手順に従います。container_settingsセクションでIPフォワードができるようにCanal YAMLを変更します。次に例を示します:
 
 ```
 "container_settings": {
